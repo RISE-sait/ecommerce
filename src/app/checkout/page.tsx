@@ -73,13 +73,14 @@ function CheckoutItemCard({ id, cookies, setCookie }: {
     }, setCookie: (name: "cart", value: any, options?: CookieSetOptions | undefined) => void
 }) {
 
+
     const cart = cookies.cart
+
     const { imageSrc, itemName, price, quantity } = cart[id]
 
-    return <div key={id} className='flex justify-between flex-wrap gap-[2vw] mb-[2vh] py-[2vh] px-[10vw]'
-        style={{ border: "1px solid black", borderRadius: "0.5rem" }}>
+    return <div key={id} className='flex justify-between flex-wrap gap-[2vw] mb-[2vh] py-[2vh] px-[10vw] border border-black rounded-xl'>
         <div className='relative w-[30vw]'>
-            <Image quality={50} fill={true} objectFit='contain' src={`/${imageSrc}`} alt="Product image" />
+            <Image quality={50} fill={true} objectFit='contain' src={imageSrc} alt="Product image" />
         </div>
         <div className='w-1/2 flex flex-col justify-between gap-[5vh]'>
             <div>

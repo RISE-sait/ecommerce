@@ -140,10 +140,12 @@ export async function checkout(itemsForCheckout: checkoutItemStructure[]): Promi
             body: JSON.stringify(itemsForCheckout)
         })
         const data = await response.json()
-        return data.url
+        const url = data.url
+
+        if (url) return url
+        throw "no url"
     }
     catch (error) {
-        console.error("Error fetching data:", error);
         throw error;
     }
 }
