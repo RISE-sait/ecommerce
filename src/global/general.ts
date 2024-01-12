@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 // const backendHost = "http://localhost:3000/"
-const backendHost = "https://ksportsbackend.onrender.com/"
+const backendHost = "https://ksportsbackend.onrender.com/ksports/"
 
 export const PRICE_SORT = {
     LOW_TO_HIGH: "LOW_TO_HIGH",
