@@ -9,7 +9,6 @@ const nextConfig = {
             {
                 protocol:'https',
                 hostname:"klintstorage.blob.core.windows.net",
-                pathname:"klintstorage"
             }
         ]
     }
