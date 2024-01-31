@@ -11,12 +11,12 @@ const db = require('./postgresConfig')
 const app = express()
 
 app.use(express.json())
-// const domain = "https://k-sports.vercel.app"
-const domain = "http://localhost:3001"
+const domain = "https://k-sports.vercel.app"
+// const domain = "http://localhost:3001"
 
 const corsOptions = {
     origin: function (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) {
-        if (origin == domain || origin == "http://localhost:3000" || origin == "http://localhost:3001" ) {
+        if (origin == domain || origin == "https://ksports-three.vercel.app" || origin == "http://localhost:3000" || origin == "http://localhost:3001" ) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
