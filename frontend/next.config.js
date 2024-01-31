@@ -8,7 +8,8 @@ const nextConfig = {
            
             {
                 protocol:'https',
-                hostname:"ksports.s3.us-east-2.amazonaws.com",
+                hostname:"klintstorage.blob.core.windows.net",
+                pathname:"klintstorage"
             }
         ]
     }
