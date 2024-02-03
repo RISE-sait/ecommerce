@@ -1,11 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BannerItems from "./BannerItems"
 
 export default function Banner() {
 
     const [transformX, setTransformX] = useState(0);
+
+    useEffect(() => {
+        setTimeout(() => {
+
+            if (transformX !== -200 && transformX !== 0) {
+                if (Math.random() < 0.5) handleRightClick()
+                else handleLeftClick()
+            }
+            else if (transformX !== 0) handleLeftClick()
+            else handleRightClick()
+        }, 2000);
+    })
 
     const handleLeftClick = () => transformX !== 0 && setTransformX(transformX + 100);
     const handleRightClick = () => transformX !== -200 && setTransformX(transformX - 100);

@@ -1,6 +1,6 @@
 "use client"
 
-import OtherHeader from '@/components/OtherHeader'
+import SecondaryHeader from '@/components/SecondaryHeader'
 import { checkout, checkoutItemStructure } from "@/global/general";
 import { useCookies } from "react-cookie"
 import { CookieSetOptions } from "universal-cookie"
@@ -9,7 +9,7 @@ import Image from 'next/image'
 export default function CheckoutPage() {
 
     return <>
-        <OtherHeader />
+        <SecondaryHeader />
         <CheckoutItemsDisplay />
     </>
 }

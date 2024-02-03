@@ -1,7 +1,7 @@
 "use client"
 
 import { CSSProperties } from "react";
-import Header from "../../components/OtherHeader";
+import Header from "../../components/SecondaryHeader";
 import { fetchData } from "../../global/general";
 import {useRouter, useSearchParams} from 'next/navigation'
 

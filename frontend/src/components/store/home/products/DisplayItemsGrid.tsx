@@ -1,7 +1,8 @@
 import React from "react";
-import { productsStorageType } from "../../../global/general";
+import { productsStorageType } from "../../../../global/general";
 import { useCookies } from "react-cookie";
 import Image from 'next/image'
+import { ActionType, Notifications } from "../AddedItemNotifications";
 
 export default function ProductsDisplayGrid({ products }: { products: productsStorageType }) {
 
@@ -12,7 +13,7 @@ export default function ProductsDisplayGrid({ products }: { products: productsSt
         <div className="
         h-min sm:mt-[10vh] items-start
         grid grid-cols-1 sm:grid-cols-2 sm:top-[15vh] lg:grid-cols-3 xl:grid-cols-4
-        " style={{ gridRowGap: "12vh", gridColumnGap: "7%"}}>
+        " style={{ gridRowGap: "12vh", gridColumnGap: "7%" }}>
 
             {Array.from(products.keys()).map(id => {
 
@@ -22,7 +23,7 @@ export default function ProductsDisplayGrid({ products }: { products: productsSt
                 return (
                     <div key={id} className="sm:w-auto sm:flex flex-col sm:justify-end mx-auto flex-grow">
                         <div className="relative min-h-[30vh]">
-                            <Image quality={50} fill={true} sizes="100%" alt="product" src={imageSrc}/>
+                            <Image quality={50} fill={true} sizes="100%" alt="product" src={imageSrc} />
                         </div>
                         <h4 className="mx-0 my-[2vh]">{itemName}</h4>
 
@@ -33,11 +34,25 @@ export default function ProductsDisplayGrid({ products }: { products: productsSt
 
                                 <h2 className="m-0 cursor-pointer" onClick={() => {
                                     if (quantity > 0) {
+                                        Notifications.NotificationQueue.push({
+                                            action: ActionType.REMOVE
+                                        })
+
+                                        Notifications.updateNotificationQueue && Notifications.updateNotificationQueue()
                                         setCookie('cart', { ...cart, [id]: { itemName: itemName, imageSrc: imageSrc, quantity: quantity - 1, price: price } })
                                     }
                                 }}>-</h2>
                                 <input className="w-1/2 text-center" type="number" onChange={(e) => setCookie('cart', { ...cart, [id]: { itemName: itemName, imageSrc: imageSrc, quantity: e.target.valueAsNumber, price: price } })} value={quantity}></input>
-                                <h2 className="m-0 cursor-pointer" onClick={() => setCookie('cart', { ...cart, [id]: { itemName: itemName, imageSrc: imageSrc, quantity: quantity + 1, price: price } })}>+</h2>
+                                <h2 className="m-0 cursor-pointer"
+                                    onClick={() => {
+                                        Notifications.NotificationQueue.push({
+                                            action: ActionType.ADD
+                                        })
+
+                                        Notifications.updateNotificationQueue && Notifications.updateNotificationQueue()
+                                        setCookie('cart', { ...cart, [id]: { itemName: itemName, imageSrc: imageSrc, quantity: quantity + 1, price: price } })
+                                    }}
+                                >+</h2>
                             </div>
 
                         </div>

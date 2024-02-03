@@ -1,6 +1,6 @@
 "use client"
 
-import OtherHeader from "@/components/OtherHeader";
+import SecondaryHeader from "@/components/SecondaryHeader";
 import { fetchPurchasedItems } from "@/global/general";
 import { CSSProperties, useRef, useState } from "react";
 
@@ -49,7 +49,7 @@ export default function TrackMyOrderPage() {
 
     return (
         <>
-            <OtherHeader />
+            <SecondaryHeader />
             <div style={{ margin: "6vh 4vw" }}>
                 <form ref={form} onSubmit={getPurchasedItems}>
                     <p className="text-center my-[5vh] text-3xl">Track Order Status</p>

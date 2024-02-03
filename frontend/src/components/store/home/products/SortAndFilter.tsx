@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, useEffect, useState } from "react";
-import { PRICE_SORT, useSortAndFilters } from "../../../global/general";
+import { PRICE_SORT, useSortAndFilters } from "../../../../global/general";
 
 export default function SortAndFilter({ itemsLength }: { itemsLength: number }) {
 

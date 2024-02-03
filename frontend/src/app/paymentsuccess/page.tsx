@@ -1,12 +1,12 @@
 "use client"
 
-import OtherHeader from "@/components/OtherHeader";
+import SecondaryHeader from "@/components/SecondaryHeader";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 export default () => {
     return <div className="text-center">
-        <OtherHeader />
+        <SecondaryHeader />
 
         <div className="my-[5vh] px-[5vw]">
             <Suspense fallback={<h1>Loading...</h1>}>

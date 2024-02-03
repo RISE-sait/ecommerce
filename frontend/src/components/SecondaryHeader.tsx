@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-export default function OtherHeader() {
+export default function SecondaryHeader() {
 
     const router = useRouter()
 

@@ -4,9 +4,10 @@ import Footer from "@/components/Footer";
 import NavBar from "@/components/store/NavBar";
 import SearchBar from "@/components/store/SearchBar";
 import SideNav from "@/components/store/SideNav/SideNav";
+import NotificationsComponent from "@/components/store/home/AddedItemNotifications";
 import Banner from "@/components/store/home/banner/Banner";
-import DisplayItemsGrid from "@/components/store/products/DisplayItemsGrid";
-import SortAndFilter from "@/components/store/products/SortAndFilter";
+import DisplayItemsGrid from "@/components/store/home/products/DisplayItemsGrid";
+import SortAndFilter from "@/components/store/home/products/SortAndFilter";
 import { productsStorageType, getProducts, useSortAndFilters, useIsSideNavOpened } from "@/global/general";
 import { useSearchParams } from "next/navigation";
 import React, { memo } from "react";
@@ -32,6 +33,8 @@ export default function ProductsPage() {
     const mainSectionRef = useRef<HTMLDivElement>(null)
     const handleMainSectionClick = () => IsSideNavOpened && setIsSideNavOpened(false)
 
+  
+
     useEffect(() => {
         const mainSection = mainSectionRef.current;
 
@@ -45,6 +48,7 @@ export default function ProductsPage() {
 
     return <div style={{ width: "90vw", margin: "0 auto" }}>
         <SideNav />
+        <NotificationsComponent/>
         <div ref={mainSectionRef} className={IsSideNavOpened ? "blur-[3px]" : "relative blur-0 h-max"}>
             <NavBar />
             <SearchBar />
