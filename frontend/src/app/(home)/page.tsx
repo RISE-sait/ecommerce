@@ -29,11 +29,11 @@ export default function ProductsPage() {
     const { max, min, sortType } = SortAndFilters
     const name = searchParams.get('name') ?? undefined
 
-    const {IsSideNavOpened, setIsSideNavOpened} = useIsSideNavOpened()
+    const { IsSideNavOpened, setIsSideNavOpened } = useIsSideNavOpened()
     const mainSectionRef = useRef<HTMLDivElement>(null)
     const handleMainSectionClick = () => IsSideNavOpened && setIsSideNavOpened(false)
 
-  
+
 
     useEffect(() => {
         const mainSection = mainSectionRef.current;
@@ -53,24 +53,24 @@ export default function ProductsPage() {
             <NavBar />
             <SearchBar />
             <Banner />
-            <ItemsSection name={name} max={max} min={min} sortType={sortType} sideNav={IsSideNavOpened} />
+            <ItemsSection name={name} max={max} min={min} sortType={sortType} sideNav={IsSideNavOpened}/>
             <Footer />
         </div>
 
     </div>
 }
 
-const ItemsSection = memo<ProductSearchParams>(({ name, max, min, sortType }) => {
+const ItemsSection = memo<ProductSearchParams>(({ name, max, min, sortType}) => {
 
     const [displayItems, setDisplayItems] = useState<productsStorageType | null>(null)
 
     useEffect(() => void (async () => setDisplayItems(await getProducts(undefined, name, min, max, sortType)))(), [max, min, sortType, name])
 
-    return displayItems !== null? (
+    return displayItems !== null ? (
         <div className="flex flex-col justify-center ssm:gap-[5vw]
          sm:flex-row" id="displayItems">
             <SortAndFilter itemsLength={displayItems.size} />
-            <DisplayItemsGrid products={displayItems} />
+            <DisplayItemsGrid products={displayItems}/>
         </div>
     )
         : <h1 className="my-[10vh] text-center">Loading Items</h1>
