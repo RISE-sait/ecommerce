@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "undefined/subscriptions/aa86650d-f04f-42d0-8021-17b01a5b1f32/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ksportsbackend",
-    "appService.deploySubpath": "."
-}
