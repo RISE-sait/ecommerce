@@ -9,6 +9,8 @@ const apiKey = process.env.KSPORTS_STRIPE_API_KEY;
 const Stripe = require("stripe");
 const stripe = new Stripe(apiKey);
 
+// const domain = "http://localhost:3001";
+
 const domain = "https://k-sports.vercel.app";
 
 const app = express();
@@ -32,7 +34,7 @@ const corsOptions = {
   },
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.post("/checkout", async (req, res) => {
   const checkoutProducts = req.body;
