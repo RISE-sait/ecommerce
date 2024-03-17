@@ -3,15 +3,14 @@ import express from "express";
 
 const { graphqlHTTP } = require("express-graphql");
 const cors = require("cors");
+const Stripe = require("stripe");
 
 const apiKey = process.env.KSPORTS_STRIPE_API_KEY;
 
-const Stripe = require("stripe");
 const stripe = new Stripe(apiKey);
+const environment = process.env.NODE_ENV || 'development'
 
-// const domain = "http://localhost:3001";
-
-const domain = "https://k-sports.vercel.app";
+const domain = environment === "production" ? "https://k-sports.vercel.app" : "http://localhost:3001"
 
 const app = express();
 app.use(express.json());
