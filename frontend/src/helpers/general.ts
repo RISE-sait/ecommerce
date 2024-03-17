@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const backendHost =
-  process.env.VERCEL_ENV === "production"
+  process.env.NODE_ENV === "production"
     ? "https://ksportsbackend.azurewebsites.net/"
     : "http://localhost:3000/";
 
