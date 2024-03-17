@@ -8,11 +8,13 @@ const Stripe = require("stripe");
 const apiKey = process.env.KSPORTS_STRIPE_API_KEY;
 
 const stripe = new Stripe(apiKey);
-const environment = process.env.NODE_ENV || 'development'
 
-const domain = environment === "production" ? "https://k-sports.vercel.app" : "http://localhost:3001"
+const domain = "https://k-sports.vercel.app"
 
 const app = express();
+
+app.get('/', (req, res) => res.send('welcome to ksports backend'))
+
 app.use(express.json());
 
 const corsOptions = {
@@ -73,4 +75,4 @@ app.use(
   })
 );
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);

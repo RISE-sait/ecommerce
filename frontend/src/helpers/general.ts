@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-const backendHost =
+export const backendHost =
   process.env.NODE_ENV === "production"
-    ? "https://ksportsbackend.azurewebsites.net/"
+    ? "https://ksportsserver.azurewebsites.net/"
     : "http://localhost:3000/";
 
 export const PRICE_SORT = ["LOW_TO_HIGH", "HIGH_TO_LOW"] as const;
