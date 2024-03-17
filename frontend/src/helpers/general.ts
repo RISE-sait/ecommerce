@@ -5,16 +5,15 @@ const backendHost =
     ? "https://ksportsbackend.azurewebsites.net/"
     : "http://localhost:3000/";
 
-export const PRICE_SORT = {
-  LOW_TO_HIGH: "LOW_TO_HIGH",
-  HIGH_TO_LOW: "HIGH_TO_LOW",
-};
+export const PRICE_SORT = ["LOW_TO_HIGH", "HIGH_TO_LOW"] as const;
+
+export type SortType = (typeof PRICE_SORT)[number];
 
 type SortAndFilterType = {
   SortAndFilters: {
     min?: number;
     max?: number;
-    sortType: string;
+    sortType: SortType;
   };
   setSortAndFilters: (
     SortAndFilters: Partial<SortAndFilterType["SortAndFilters"]>
@@ -55,7 +54,7 @@ export const useSortAndFilters = create<SortAndFilterType>((set) => ({
   SortAndFilters: {
     min: undefined,
     max: undefined,
-    sortType: PRICE_SORT.LOW_TO_HIGH,
+    sortType: "LOW_TO_HIGH",
   },
   setSortAndFilters: (newSortAndFilters) => {
     set((current) => ({

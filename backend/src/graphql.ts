@@ -31,46 +31,96 @@ const InfoType = new GraphQLObjectType({
     subtypes: {
       type: GraphQLList(GraphQLInt),
       resolve: async (parent) => {
-        const ids: number[] = parent.ids;
-        const nextLayerName =
-          `category_level${ids.length}_id` as keyof Prisma.productsWhereInput;
+        try {
+          const ids: number[] = parent.ids;
 
-        const whereInput: Prisma.productsWhereInput = {
-          AND: ids.map((id, idx) => ({
-            [`category_level${idx}_id`]: { equals: id },
-          })),
-        };
+          const nextLayerName =
+            `category_level${ids.length}_id` as keyof Prisma.productsWhereInput;
 
-        const values = await prisma.products.findMany({
-          select: {
-            [nextLayerName]: true,
-          },
-          where: whereInput,
-        });
+          const whereInput: Prisma.productsWhereInput = {
+            AND: ids.map((id, idx) => ({
+              [`category_level${idx}_id`]: { equals: id },
+            })),
+          };
 
-        return [...new Set(values.map((value) => value[nextLayerName]))];
-      },
+          const values = await prisma.products.findMany({
+            select: {
+              [nextLayerName]: true,
+            },
+            where: whereInput,
+          });
+
+          return [
+            ...new Set(
+              values
+                .map((value) => value[nextLayerName])
+                .filter((value) => value !== null)
+            ),
+          ];
+        } catch (err) {
+          console.error(err)
+        }
+
+      }
     },
     products: {
       type: GraphQLList(ProductsType),
       resolve: async (parent) => {
-        const ids: number[] = parent.ids;
+        try {
 
-        const whereInput: Prisma.productsWhereInput = {
-          AND: ids.map((id, idx) => ({
-            [`category_level${idx}_id`]: { equals: id },
-          })),
-        };
+          const {
+            ids,
+            sortType,
+            max,
+            min,
+            name,
+          }: {
+            ids?: number[];
+            sortType?: string;
+            max?: number;
+            min?: number;
+            name?: string;
+          } = parent;
 
-        const products = await prisma.products.findMany({
-          where: whereInput,
-        });
 
-        return products.map((product) => ({
-          ...product,
-          price: parseFloat(product.price.toString()) / 100,
-        }));
-      },
+          if (name) {
+            return (await prisma.products.findMany({
+              where: {
+                itemName: {
+                  contains: name,
+                  mode: "insensitive"
+                },
+              }
+            })).map((product) => ({
+              ...product,
+              price: parseFloat(product.price.toString()) / 100
+            }))
+          }
+
+          const products = await prisma.products.findMany({
+            where: {
+              AND: ids && ids.map((id, idx) => ({
+                [`category_level${idx}_id`]: { equals: id },
+              })),
+              price: {
+                ...(min && { gte: min * 100 }),
+                ... (max && { lte: max * 100 }),
+              },
+            },
+            orderBy: {
+              price: sortType === "HIGH_TO_LOW" ? "desc" : "asc",
+            },
+          });
+
+          return products.map((product) => ({
+            ...product,
+            price: parseFloat(product.price.toString()) / 100,
+          }));
+        }
+        catch (err) {
+          console.error(err)
+        }
+      }
     },
   }),
 });
@@ -83,6 +133,18 @@ const RootType = new GraphQLObjectType({
       args: {
         ids: {
           type: GraphQLList(GraphQLInt),
+        },
+        sortType: {
+          type: GraphQLString,
+        },
+        min: {
+          type: GraphQLFloat,
+        },
+        max: {
+          type: GraphQLFloat,
+        },
+        name: {
+          type: GraphQLString,
         },
       },
       resolve: (_, args) => args,

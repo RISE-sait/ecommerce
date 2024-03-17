@@ -21,30 +21,12 @@ import React, { memo } from "react";
 import { useState, useEffect, useRef } from "react";
 
 interface ProductSearchParams {
-  name: string | undefined;
-  max: number | undefined;
-  min: number | undefined;
-  sortType: string | undefined;
-  sideNav: boolean | undefined;
+  name?: string;
+  max?: number;
+  min?: number;
+  sortType?: string;
+  sideNav?: boolean;
 }
-
-const GET_ITEMS = gql`
-  query {
-    info(ids: []) {
-      products {
-        itemName
-        authorLink
-        id
-        authorName
-        imageCredit
-        imageSrc
-        price
-        category_level0_id
-        category_level1_id
-      }
-    }
-  }
-`;
 
 export default function ProductsPage() {
   const { SortAndFilters } = useSortAndFilters();
@@ -100,31 +82,66 @@ const ItemsSection = memo<ProductSearchParams>(
       useState<productsStorageType | null>(null);
 
     useEffect(() => {
-      (async () => {
-        const { data, networkStatus } = await client.query({
-          query: GET_ITEMS,
-        });
+      try {
 
-        if (networkStatus === NetworkStatus.error)
-          return console.error("Failed to fetch data");
+        let minArg = "";
+        let maxArg = "";
+        let nameArg = "";
+        let sortTypeArg = "";
 
-        const products: productsStorageType = new Map();
-        (data.info.products as (productsType & { id: number })[]).forEach(
-          (product) => {
-            products.set(product.id, {
-              authorLink: product.authorLink,
-              authorName: product.authorName,
-              imageCredit: product.imageCredit,
-              imageSrc: product.imageSrc,
-              itemName: product.itemName,
-              price: product.price,
-              quantity: 0,
-            });
+        // Construct argument strings for min, max, name, and sortType if they are defined
+        if (min) minArg = `, min: ${min}`;
+        if (max) maxArg = `, max: ${max}`;
+        if (name) nameArg = `, name: "${name}"`;
+        if (sortType) sortTypeArg = `, sortType: "${sortType}"`;
+
+        const GET_ITEMS = gql`
+        query {
+          info(ids: [], ${sortTypeArg}${nameArg}${minArg}${maxArg}) {
+            products {
+              itemName
+              authorLink
+              id
+              authorName
+              imageCredit
+              imageSrc
+              price
+              category_level0_id
+              category_level1_id
+            }
           }
-        );
+        }
+      `;
 
-        setDisplayItems(products);
-      })();
+        (async () => {
+          const { data, networkStatus } = await client.query({
+            query: GET_ITEMS,
+          });
+
+          if (networkStatus === NetworkStatus.error)
+            return console.error("Failed to fetch data");
+
+          const products: productsStorageType = new Map();
+          (data.info.products as (productsType & { id: number })[]).forEach(
+            (product) => {
+              products.set(product.id, {
+                authorLink: product.authorLink,
+                authorName: product.authorName,
+                imageCredit: product.imageCredit,
+                imageSrc: product.imageSrc,
+                itemName: product.itemName,
+                price: product.price,
+                quantity: 0,
+              });
+            }
+          );
+
+          setDisplayItems(products);
+        })();
+      }
+      catch (err) {
+        console.error(err)
+      }
     }, [max, min, sortType, name]);
 
     return displayItems !== null ? (

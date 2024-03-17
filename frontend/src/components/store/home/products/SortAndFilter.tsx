@@ -1,7 +1,11 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
-import { PRICE_SORT, useSortAndFilters } from "../../../../helpers/general";
+import {
+  PRICE_SORT,
+  SortType,
+  useSortAndFilters,
+} from "../../../../helpers/general";
 
 export default function SortAndFilter({
   itemsLength,
@@ -11,9 +15,9 @@ export default function SortAndFilter({
   const { SortAndFilters, setSortAndFilters } = useSortAndFilters();
 
   const [filters, setFilters] = useState<{
-    min?: number | undefined;
-    max?: number | undefined;
-    sortType: string;
+    min?: number;
+    max?: number;
+    sortType: SortType;
   }>({
     min: SortAndFilters.min,
     max: SortAndFilters.max,
@@ -21,14 +25,17 @@ export default function SortAndFilter({
   });
 
   const [debouncedFilters, setDebouncedFilters] = useState<{
-    min?: number | undefined;
-    max?: number | undefined;
-    sortType: string;
+    min?: number;
+    max?: number;
+    sortType: SortType;
   }>(SortAndFilters);
 
   // Update debouncedFilters state on user input
   const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) =>
-    setFilters((filters) => ({ ...filters, sortType: e.target.value }));
+    setFilters((filters) => ({
+      ...filters,
+      sortType: e.target.value as SortType,
+    }));
 
   const handleMinChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.toString() === "")
@@ -73,12 +80,8 @@ export default function SortAndFilter({
             Price{" "}
           </label>
           <select onChange={handleSortChange} value={filters.sortType}>
-            <option value={PRICE_SORT.LOW_TO_HIGH.toString()}>
-              Low to high
-            </option>
-            <option value={PRICE_SORT.HIGH_TO_LOW.toString()}>
-              High to low
-            </option>
+            <option value={PRICE_SORT[0]}>Low to high</option>
+            <option value={PRICE_SORT[1]}>High to low</option>
           </select>
         </div>
 

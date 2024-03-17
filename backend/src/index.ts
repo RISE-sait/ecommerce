@@ -32,7 +32,7 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.post("/checkout", async (req, res) => {
   const checkoutProducts = req.body;
