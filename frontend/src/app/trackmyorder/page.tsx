@@ -1,6 +1,5 @@
 "use client";
 
-import SecondaryHeader from "@/components/SecondaryHeader";
 import { fetchPurchasedItems } from "@/helpers/general";
 import { CSSProperties, useRef, useState } from "react";
 
@@ -54,7 +53,6 @@ export default function TrackMyOrderPage() {
 
   return (
     <>
-      <SecondaryHeader />
       <div style={{ margin: "6vh 4vw" }}>
         <form ref={form} onSubmit={getPurchasedItems}>
           <p className="text-center my-[5vh] text-3xl">Track Order Status</p>
@@ -82,7 +80,7 @@ export default function TrackMyOrderPage() {
               >
                 <p className="text-xl">{item.price_data.product_data.name}</p>
                 <p className="text-xl">
-                  Price: ${item.price_data.unit_amount / 100}
+                  Price: ${item.price_data.unit_amount}
                 </p>
                 <p className="text-xl">Quantity: {item.quantity}</p>
               </div>

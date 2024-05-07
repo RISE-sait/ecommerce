@@ -1,0 +1,21 @@
+type Product {
+  id: Int!
+  itemName: String!
+  authorLink: String
+  authorName: String
+  imageCredit: String
+  imageSrc: String!
+  price: Float!
+  category_level0: String
+  description: String!
+  category_level1: String
+}
+
+type InfoQueryType {
+  subtypes: [String]
+  products: [Product]
+}
+
+type Query {
+  info(subtypes: [String], itemName: String, sortType: String, min: Float, max: Float, name: String, showAmt: Int): InfoQueryType
+}

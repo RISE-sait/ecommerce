@@ -7,24 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model categoryLevel0 {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(20)
-}
-
-model categoryLevel1 {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(20)
-}
-
 model products {
   id                 Int     @id @default(autoincrement())
   itemName           String
-  authorLink         String
-  authorName         String
-  imageCredit        String
+  authorLink         String?
+  authorName         String?
+  imageCredit        String?
   imageSrc           String
+  description String
   price              Decimal @db.Decimal
-  category_level0_id Int?
-  category_level1_id Int?
+  category_level0 String?
+  category_level1 String?
+  category_level2 String?
 }

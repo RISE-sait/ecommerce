@@ -1,5 +1,4 @@
-import Footer from "@/components/Footer";
-import BannerItems from "@/components/store/home/banner/BannerItems";
+import BannerItems from "@/components/home/Banner/BannerItems";
 
 export default function HomeSkel() {
 
@@ -49,8 +48,6 @@ export default function HomeSkel() {
     </div>
 
     <h1 className="my-[10vh] text-center">Loading Items</h1>
-
-    <Footer />
   </div>
 }
 

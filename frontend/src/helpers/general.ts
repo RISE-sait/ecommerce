@@ -22,12 +22,13 @@ type SortAndFilterType = {
 
 export type productsType = {
   itemName: string;
-  authorLink: string;
-  authorName: string;
-  imageCredit: string;
+  authorLink?: string;
+  authorName?: string;
+  imageCredit?: string;
   imageSrc: string;
   price: number;
   quantity?: number;
+  description: string
 };
 
 export type checkoutItemStructure = {

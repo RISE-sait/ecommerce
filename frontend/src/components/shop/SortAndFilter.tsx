@@ -5,7 +5,7 @@ import {
   PRICE_SORT,
   SortType,
   useSortAndFilters,
-} from "../../../../helpers/general";
+} from "../../helpers/general";
 
 export default function SortAndFilter({
   itemsLength,
