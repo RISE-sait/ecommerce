@@ -3,8 +3,16 @@
 import { checkout, checkoutItemStructure } from "@/helpers/general";
 import { useCookies } from "react-cookie";
 import Image from "next/image";
+import { Session } from "next-auth"
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function CheckoutPage() {
+
+  const router = useRouter()
+  const { data: session } = useSession()
+
   const [cookies, setCookie] = useCookies(["cart"]);
 
   const cart = cookies.cart as {
@@ -42,6 +50,11 @@ export default function CheckoutPage() {
     })
     : []
 
+  const checkUser = () => !(session?.user) && router.push('http://localhost:3000/api/auth/signin')
+
+  useEffect(() => {
+    checkUser()
+  }, [])
 
   return (
     <>

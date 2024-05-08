@@ -4,15 +4,18 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaSearch, FaUser, FaCaretDown } from "react-icons/fa";
 import Link from "next/link";
 import { NavLinks } from "@/helpers/constants";
-import { BsSuitHeartFill } from "react-icons/bs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { SessionInfo } from "@/helpers/general";
 
 export default function Header() {
   const searchParams = useSearchParams();
   const router = useRouter()
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   const [searchTerm, setSearchTerm] = useState<string>();
+  const [showUserOptions, setShowUserOptions] = useState(false)
 
   // Update searchTerm state on user input
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
@@ -20,6 +23,9 @@ export default function Header() {
   // Apply debouncing effect
   useEffect(() => {
     const current = new URLSearchParams(Array.from(searchParams.entries()))
+    if (!SessionInfo.get("Email") && session?.user) {
+      SessionInfo.session = session
+    }
 
     const handler = setTimeout(() => {
       if (searchTerm) current.set("itemName", searchTerm)
@@ -58,13 +64,21 @@ export default function Header() {
               <li className="list-none text-nowrap">{title}</li>
             </Link>
           ))}
-
-          <div onClick={() => { }} className="flex font-normal text-[#767676] h-6 px-6 border-0 border-r-2 items-center border-r-gray-300">
-            <BsSuitHeartFill />
-          </div>
-          <div onClick={() => { }} className="flex font-normal text-[#767676] h-6 px-6 items-center">
-            <FaUser />
-            <FaCaretDown />
+          <div className="relative">
+            <div onClick={() => { }} className="flex font-normal text-[#767676] h-6 px-6 items-center">
+              <FaUser />
+              <FaCaretDown />
+            </div>
+            <div className="absolute top-7 left-0 right-0 text-center">
+              {
+                session?.user ?
+                  <h4>{session.user.name}</h4>
+                  :
+                  <>
+                    <h5>You're not signed in</h5>
+                  </>
+              }
+            </div>
           </div>
         </div>
       </div>

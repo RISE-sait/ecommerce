@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { create } from "zustand";
 
 export const backendHost =
@@ -6,6 +7,51 @@ export const backendHost =
     : "http://localhost:3000/";
 
 export const PRICE_SORT = ["LOW_TO_HIGH", "HIGH_TO_LOW"] as const;
+
+type UserPersonalInfoType = {
+  email: string,
+  name: string,
+  image: string
+}
+
+type TOrUndefined<T> = T | undefined
+
+enum CookieKeynames {
+  Username = "username",
+  Email = "email",
+  Image = "image",
+}
+
+export class SessionInfo {
+
+  public static document: Document
+
+  private static getCookieValue(cookieName: string): TOrUndefined<String> {
+    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+    const userCookie = cookies.find(cookie => cookie.startsWith(`${cookieName}=`));
+
+    return userCookie ? userCookie.split('=')[1] : undefined;
+  }
+
+  public static get<T extends keyof typeof CookieKeynames>(cookieName: T): TOrUndefined<String> {
+    return SessionInfo.getCookieValue(CookieKeynames[cookieName])
+  }
+
+  public static set session(session: Session) {
+
+    const user = session.user as UserPersonalInfoType
+
+    if (!user || !user.email || !user.name || !user.image) {
+      throw new Error("Invalid user personal information");
+    }
+
+    const email = user.email
+    const username = user.name
+    const image = user.image
+
+    document.cookie = `${CookieKeynames.Email} = ${email} ; ${CookieKeynames.Username} = ${username} ; ${CookieKeynames.Image} = ${image}`;
+  }
+}
 
 export type SortType = (typeof PRICE_SORT)[number];
 

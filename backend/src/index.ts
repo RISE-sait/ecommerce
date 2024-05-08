@@ -5,7 +5,9 @@ import { expressMiddleware } from '@apollo/server/express4';
 import Stripe from "stripe";
 
 const apiKey = process.env.KSPORTS_STRIPE_API_KEY;
-const domain = "https://k-sports.vercel.app";
+
+// const domain = "https://k-sports.vercel.app";
+const domain = "http://localhost:3001";
 
 const stripe = new Stripe(apiKey!!);
 
@@ -43,12 +45,19 @@ app.post("/checkout", async (req, res) => {
   const checkoutProducts = req.body;
 
   try {
+
+    const deliveryDate = new Date()
+    deliveryDate.setDate(deliveryDate.getDate() + 7)
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: checkoutProducts,
       success_url: `${domain}/paymentsuccess?orderID={CHECKOUT_SESSION_ID}`,
       cancel_url: `${domain}/paymentfailed`,
-      metadata: { checkoutProducts: JSON.stringify(checkoutProducts) },
+      metadata: {
+        checkoutProducts: JSON.stringify(checkoutProducts),
+        deliverDate: deliveryDate.toISOString()
+      },
     });
 
     res.json({ url: session.url });

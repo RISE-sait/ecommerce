@@ -1,6 +1,6 @@
 "use client"
 
-import DisplayItems from "@/components/shop/DisplayItems";
+import DisplayItems from "@/components/home/DisplayItems";
 import React, { useEffect, useMemo, useState } from "react";
 import client from "@/helpers/apollo";
 import { DocumentNode, NetworkStatus, gql } from "@apollo/client";
@@ -11,7 +11,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
 import Link from "next/link";
-import CategoryOptions from "@/components/shop/CategoryOptions";
+import CategoryOptions from "@/components/home/CategoryOptions";
 
 export default function ShopingPageContent() {
 
@@ -39,7 +39,8 @@ export default function ShopingPageContent() {
 
     const subtypesSearchParams = searchParams.get('subtypes')
 
-    const subtypesGql = subtypesSearchParams ? `subtypes: [${subtypesSearchParams.split(',').map(sub => `"${sub}"`)}]` : "subtypes: []"
+
+    // const subtypesGql = `subtypes: ${subtypesSearchParams ?? "[]"} `
     const sortTypeGql = sortTypeSearchParams !== null && `sortType: \"${sortTypeSearchParams}\" `
     const showAmtGql = showAmtSearchParams !== null && `showAmt: ${showAmtSearchParams}`
     const itemNameGql = itemNameSearchParams !== null && `itemName: \"${itemNameSearchParams}\"`
@@ -47,7 +48,6 @@ export default function ShopingPageContent() {
     const sortsList: string[] = []
 
     if (sortTypeGql) sortsList.push(sortTypeGql)
-    if (subtypesGql) sortsList.push(subtypesGql)
     if (showAmtGql) sortsList.push(showAmtGql)
     if (itemNameGql) sortsList.push(itemNameGql)
 
@@ -64,55 +64,50 @@ export default function ShopingPageContent() {
       imageCredit
       imageSrc
       price
-      category_level0
-      category_level1
+      category_level0_id
+      category_level1_id
     }
   }
 }
 `, [showAmtSearchParams, sortTypeSearchParams, subtypesSearchParams, itemNameSearchParams])
 
     useEffect(() => {
-        try {
-            (async () => {
-                const { data, networkStatus, error } = await client.query({
-                    query: GetProductsQuery,
-                });
 
-                if (error) {
-                    console.log(error.message);
-                    return
+        (async () => {
+
+            const { data, networkStatus, error } = await client.query({
+                query: GetProductsQuery,
+            });
+
+            if (networkStatus === NetworkStatus.error)
+                return console.error("Failed to fetch data");
+
+            const products: productsStorageType = new Map();
+            (data.info.products as (productsType & { id: number })[]).forEach(
+                product => {
+
+                    const cartProduct = cookies["cart"] ? cookies["cart"][product.id] : undefined;
+
+                    products.set(product.id, {
+                        description: product.description,
+                        authorLink: product.authorLink,
+                        authorName: product.authorName,
+                        imageCredit: product.imageCredit,
+                        imageSrc: product.imageSrc,
+                        itemName: product.itemName,
+                        price: product.price,
+                        quantity: cartProduct ? cartProduct.quantity : 0,
+                    });
                 }
+            );
 
-                const products: productsStorageType = new Map();
-                (data.info.products as (productsType & { id: number })[]).forEach(
-                    product => {
-
-                        const cartProduct = cookies["cart"] ? cookies["cart"][product.id] : undefined;
-
-                        products.set(product.id, {
-                            description: product.description,
-                            authorLink: product.authorLink,
-                            authorName: product.authorName,
-                            imageCredit: product.imageCredit,
-                            imageSrc: product.imageSrc,
-                            itemName: product.itemName,
-                            price: product.price,
-                            quantity: cartProduct ? cartProduct.quantity : 0,
-                        });
-                    }
-                );
-
-                setDisplayItems(products);
-            })();
-        }
-        catch (err) {
-            console.log(err)
-        }
+            setDisplayItems(products);
+        })();
     }, [GetProductsQuery])
 
     return (
         <div className="max-w-container mx-auto px-4 relative">
-            <Link href="/trackmyorder">
+            <Link href="/cart">
                 <div className={`fixed top-20 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-4 pt-7 pl-4 pr-8 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>
                     <FaCartShopping className="fill-gray-500" />
                     <p className="text-base font-semibold">Cart</p>

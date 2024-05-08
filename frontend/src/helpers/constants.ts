@@ -9,10 +9,6 @@ export const NavLinks: NavLinkProp[] = [
         title: "Home"
     },
     {
-        link: '/shop',
-        title: "Shop"
-    },
-    {
         link: '/trackMyOrder',
         title: "Track My Order"
     }
