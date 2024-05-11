@@ -12,6 +12,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
 import Link from "next/link";
 import CategoryOptions from "@/components/home/CategoryOptions";
+import { useSession } from "next-auth/react";
 
 export default function ShopingPageContent() {
 
@@ -30,6 +31,7 @@ export default function ShopingPageContent() {
     };
 
     const cartAmt = useMemo(() => cart ? Object.values(cart).reduce((acc, item) => acc + item.quantity, 0) : 0, [cart])
+    const { data: session } = useSession()
 
     const searchParams = useSearchParams();
 
@@ -72,6 +74,7 @@ export default function ShopingPageContent() {
 `, [showAmtSearchParams, sortTypeSearchParams, subtypesSearchParams, itemNameSearchParams])
 
     useEffect(() => {
+
         try {
             (async () => {
                 const { data, networkStatus, error } = await client.query({
@@ -108,7 +111,7 @@ export default function ShopingPageContent() {
     return (
         <div className="max-w-container mx-auto px-4 relative">
             <Link href="/cart">
-                <div className={`fixed top-28 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-4 pt-7 pl-4 pr-8 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>
+                <div className={`fixed top-36 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-4 pt-7 pl-4 pr-8 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>
                     <FaCartShopping className="fill-gray-500" />
                     <p className="text-base font-semibold">Cart</p>
                     <p className="absolute top-2 right-2 bg-blue-500 w-8 text-center aspect-square text-2xl rounded-full">{

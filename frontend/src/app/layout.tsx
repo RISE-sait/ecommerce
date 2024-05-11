@@ -16,15 +16,17 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <SessionProvider>
 
-        <body className={`max-w-[100vw]`}>
+      <body className={`max-w-[100vw]`}>
+        <SessionProvider>
           <Header />
+
           <div className='mx-8'>
             {children}
           </div>
-        </body>
-      </SessionProvider>
+        </SessionProvider>
+
+      </body>
 
     </html>
   )

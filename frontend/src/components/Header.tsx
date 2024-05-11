@@ -3,10 +3,24 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaSearch, FaUser, FaCaretDown } from "react-icons/fa";
 import Link from "next/link";
-import { NavLinks } from "@/helpers/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { SessionInfo } from "@/helpers/general";
+import { signIn, signOut, useSession } from "next-auth/react";
+
+type NavLinkProp = {
+  title: string,
+  link: string
+}
+
+export const NavLinks: NavLinkProp[] = [
+  {
+    link: '/',
+    title: "Home"
+  },
+  {
+    link: '/trackMyOrder',
+    title: "Track My Order"
+  }
+]
 
 export default function Header() {
   const searchParams = useSearchParams();
@@ -23,9 +37,6 @@ export default function Header() {
   // Apply debouncing effect
   useEffect(() => {
     const current = new URLSearchParams(Array.from(searchParams.entries()))
-    if (!SessionInfo.get("Email") && session?.user) {
-      SessionInfo.session = session
-    }
 
     const handler = setTimeout(() => {
       if (searchTerm) current.set("itemName", searchTerm)
@@ -44,7 +55,7 @@ export default function Header() {
           <Link href="/">
             <h3 className="bg-blue-500 text-white font-bold text-xl px-3 py-2">KSPORTS</h3>
           </Link>
-          <div className="flex w-full border border-black items-center p-2 rounded-md ml-3">
+          <div className="flex w-[55vw] border border-black items-center p-2 rounded-md ml-3">
             <input
               className="bg-transparent h-full flex-grow outline-none placeholder:text-black placeholder:text-xl"
               type="text"
@@ -54,28 +65,32 @@ export default function Header() {
             />
             <FaSearch className="w-5 h-5" />
           </div>
-          {NavLinks.map(({ title, link }) => title !== "Cart" && (
+          {NavLinks.map(({ title, link }) => (
             <Link
               key={title}
-              className="font-semibold h-6 justify-center items-center px-8 text-base text-[#767676] hover:underline underline-offset-[4px] 
+              className="font-semibold h-6 justify-center items-center flex-grow text-center text-base text-[#767676] hover:underline underline-offset-[4px] 
               decoration-[2px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 last:border-r-0"
               href={link}
             >
               <li className="list-none text-nowrap">{title}</li>
             </Link>
           ))}
-          <div className="relative">
-            <div onClick={() => { }} className="flex font-normal text-[#767676] h-6 px-6 items-center">
+          <div className="relative flex-grow text-center">
+            <div onClick={() => setShowUserOptions(curr => !curr)} className="flex font-normal text-[#767676] h-6 px-6 justify-center items-center">
               <FaUser />
               <FaCaretDown />
             </div>
-            <div className="absolute top-7 left-0 right-0 text-center">
+            <div className={`absolute top-7 left-0 right-0 text-center w-40 mx-auto ${showUserOptions ? "block" : "hidden"} bg-white border border-black px-1 py-3`}>
               {
                 session?.user ?
-                  <h4>{session.user.name}</h4>
+                  <>
+                    <h4>{session.user.name}</h4>
+                    <button onClick={() => signOut()} className="bg-white text-black">Sign out</button>
+                  </>
                   :
                   <>
                     <h5>You're not signed in</h5>
+                    <button onClick={() => signIn('google')} className="bg-white text-black">Sign in with Google</button>
                   </>
               }
             </div>
