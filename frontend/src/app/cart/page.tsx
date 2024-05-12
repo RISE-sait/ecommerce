@@ -1,12 +1,15 @@
 "use client";
 
-import { checkout, checkoutItemStructure } from "@/helpers/general";
+import { backendHost, checkout, checkoutItemStructure } from "@/helpers/general";
 import { useCookies } from "react-cookie";
 import Image from "next/image";
 import { Session } from "next-auth"
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { DocumentNode } from "graphql";
+import { gql } from "@apollo/client";
+import client from "@/helpers/apollo";
 
 export default function CheckoutPage() {
 

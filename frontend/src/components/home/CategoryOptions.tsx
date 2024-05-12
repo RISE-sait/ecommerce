@@ -1,17 +1,20 @@
+"use client"
+
 import client from "@/helpers/apollo";
 import { gql } from "@apollo/client";
 import { DocumentNode } from "graphql";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import SSRCategoryOptions from "./SSRCategoryOptions";
 
-export default function CategoryOptions() {
+export default function CategoryOptions({ children }: { children: JSX.Element }) {
     return <>
         <h3 className="text-2xl  font-semibold">Shop by Category</h3>
-        <CategoriesListing parentSubtypes={[]} />
+        <CategoriesListing parentSubtypes={[]} ssrElement={children} />
     </>
 }
 
-function CategoriesListing({ parentSubtypes }: { parentSubtypes: string[] }) {
+function CategoriesListing({ parentSubtypes, ssrElement }: { parentSubtypes: string[], ssrElement?: JSX.Element }) {
     const [subtypes, setSubtypes] = useState<string[]>([]);
     const [error, setError] = useState<any>(null);
 
@@ -44,7 +47,9 @@ function CategoriesListing({ parentSubtypes }: { parentSubtypes: string[] }) {
         }
     }, []);
 
-    return subtypes.map(subtype => <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />)
+    if (!ssrElement) return <>{subtypes.map(subtype => <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />)}</>
+
+    return subtypes.length > 0 ? <>{subtypes.map(subtype => <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />)}</> : <>{ssrElement}</>
 }
 
 function CategoriesListItem({ subtype, parentSubtypes }: { subtype: string, parentSubtypes: string[] }) {
@@ -57,7 +62,7 @@ function CategoriesListItem({ subtype, parentSubtypes }: { subtype: string, pare
     const current = new URLSearchParams(Array.from(searchParams.entries()))
     const pathname = usePathname()
 
-    return <div key={parentSubtypes.concat(subtype).join('-')} className={`my-3 text-gray-500 cursor-pointer text-xl relative`}>
+    return <div className={`my-3 text-gray-500 cursor-pointer text-xl relative`}>
         <div className="flex justify-between" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
             <h2 style={{ paddingLeft: `${parentSubtypes.length * 25}px` }} onClick={() => setIsClosed(!isClosed)}>{isClosed ? "+" : "-"} {subtype}</h2>
             {

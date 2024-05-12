@@ -1,27 +1,48 @@
 "use client"
 
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import client from "@/helpers/apollo";
+import { gql } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
-export default () => {
+export default ({ searchParams }: { searchParams: { orderID: string } }) => {
+    const { data: session } = useSession()
+
+    const orderId = searchParams.orderID
+
+    useEffect(() => {
+
+        if (!session?.user?.email) return
+
+        const email = session.user.email;
+
+        (async () => {
+            const query: DocumentNode = gql`
+        mutation {
+      addPurchase(orderId:"${orderId}", email:"${email}") 
+    }
+    `
+            const { data, errors } = await client.mutate({
+                mutation: query,
+            })
+
+            if (errors) console.error(errors)
+
+        })()
+
+
+    }, [session?.user?.email])
+
+
     return <div className="text-center">
 
         <div className="my-[5vh] px-[5vw]">
-            <Suspense fallback={<h1>Loading...</h1>}>
-                <h1>Payment Success</h1>
-                <DisplayOrderID />
-                <h3>Your order ID allows you to keep track of your order at</h3>
-                <a className="underline hover:cursor-pointer" href="/trackmyorder">Track your order</a>
-            </Suspense>
+            <h1>Payment Success</h1>
+            <h3 className="my-[5vh] break-words">Order ID: {orderId}</h3>
+            <h3>Your order ID allows you to keep track of your order at</h3>
+            <a className="underline hover:cursor-pointer" href="/trackmyorder">Track your order</a>
         </div>
     </div>
 }
 
-function DisplayOrderID() {
-
-    const searchParams = useSearchParams();
-
-    const orderID = searchParams.get("orderID");
-
-    return <h3 className="my-[5vh] break-words">Order ID: {orderID}</h3>
-}

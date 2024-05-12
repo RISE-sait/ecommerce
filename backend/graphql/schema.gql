@@ -11,11 +11,27 @@ type Product {
   category_level1: String
 }
 
+type PurchaseDetail {
+  items: [PurchaseItemDetail!]
+  deliveryDate: String!
+}
+
+type PurchaseItemDetail {
+  itemName: String!,
+  quantity: Int!,
+  price: Float!
+}
+
 type InfoQueryType {
   subtypes: [String]
   products: [Product]
 }
 
 type Query {
-  info(subtypes: [String], itemName: String, sortType: String, min: Float, max: Float, name: String, showAmt: Int): InfoQueryType
+  info(subtypes: [String], itemName: String, sortType: String, min: Float, max: Float, name: String, showAmt: Int): InfoQueryType,
+  purchase(orderId: String!, email: String!) : PurchaseDetail!
+}
+
+type Mutation {
+  addPurchase(orderId: String!, email: String!): Boolean!
 }

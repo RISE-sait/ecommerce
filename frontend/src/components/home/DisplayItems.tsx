@@ -1,6 +1,3 @@
-"use client"
-
-import React, { memo } from "react";
 import { productsStorageType } from "../../helpers/general";
 import GridItem from "./GridItem";
 import ListItem from "./ListItem";
@@ -9,7 +6,7 @@ export enum AddOrReduceEnum {
   ADD, REDUCE
 }
 
-const ProductsDisplay = memo(({
+const ProductsDisplay = ({
   products,
   isDisplayGrid
 }: {
@@ -31,7 +28,7 @@ const ProductsDisplay = memo(({
             className={`${isDisplayGrid && "border border-gray-400 relative"}  mt-7`}
           >
             {
-              isDisplayGrid ? <GridItem {...productsInfo} /> : <ListItem {...productsInfo} />
+              isDisplayGrid ? <GridItem productsInfo={productsInfo} /> : <ListItem productsInfo={productsInfo} />
             }
           </div>
         );
@@ -41,9 +38,8 @@ const ProductsDisplay = memo(({
   )
     :
     <NoItemsToDisplay />
-}, (prevProps, newProps) => prevProps.isDisplayGrid === newProps.isDisplayGrid && prevProps.products === newProps.products
-)
-
-export default ProductsDisplay
+}
 
 const NoItemsToDisplay = () => <h3 className="relative left-0 mx-auto top-[13vh]">No items to display</h3>
+
+export default ProductsDisplay

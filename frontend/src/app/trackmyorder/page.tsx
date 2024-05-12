@@ -1,17 +1,13 @@
 "use client";
 
 import { fetchPurchasedItems } from "@/helpers/general";
+import { useSession } from "next-auth/react";
 import { CSSProperties, useRef, useState } from "react";
 
 type purchasedItemsFormat = {
-  price_data: {
-    currency: string;
-    product_data: {
-      name: string;
-    };
-    unit_amount: number;
-  };
-  quantity: number;
+  itemName: string,
+  quantity: number,
+  price: number,
 };
 
 const styles: { [key: string]: CSSProperties } = {
@@ -30,6 +26,8 @@ export default function TrackMyOrderPage() {
   const [purchasedItems, setPurchasedItems] = useState<any[]>([]);
   const [deliverDate, setDeliverDate] = useState<Date>();
   const form = useRef<HTMLFormElement>(null);
+  const { data: session } = useSession()
+
 
   let deliverStatus;
 
@@ -46,23 +44,17 @@ export default function TrackMyOrderPage() {
   const getPurchasedItems = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const orderNumber = form.current?.elements.namedItem(
-        "number"
-      ) as HTMLInputElement;
-      const items = await fetchPurchasedItems(orderNumber.value);
+    const orderNumber = form.current?.elements.namedItem(
+      "number"
+    ) as HTMLInputElement;
 
-      if (items) {
-        const productsInJSON = JSON.parse(
-          items["metadata"]["checkoutProducts"]
-        );
+    console.log(session?.user?.email)
+    const { purchase } = await fetchPurchasedItems(orderNumber.value, session?.user?.email as string);
 
-        setDeliverDate(new Date(items["metadata"]["deliverDate"]))
+    if (purchase) {
+      setDeliverDate(new Date(purchase["deliverDate"]))
 
-        setPurchasedItems(productsInJSON);
-      }
-    } catch (err) {
-      console.log(err);
+      setPurchasedItems(purchase.items);
     }
   };
 
@@ -96,9 +88,9 @@ export default function TrackMyOrderPage() {
                     key={index}
                     className="flex justify-evenly items-center rounded-md mx-0 my-[2vh] py-[3vh] border border-black"
                   >
-                    <p className="text-xl">{item.price_data.product_data.name}</p>
+                    <p className="text-xl">{item.itemName}</p>
                     <p className="text-xl">
-                      Price: ${item.price_data.unit_amount}
+                      Price: ${item.price}
                     </p>
                     <p className="text-xl">Quantity: {item.quantity}</p>
                   </div>

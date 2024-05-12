@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCookies } from "react-cookie";
 import { AddOrReduceEnum } from "./DisplayItems";
+import ItemQuantitySet from "./ItemQuantitySet";
 
-const ListItem = ((productsInfo: productsType & {
-    id: number
+const ListItem = ({ productsInfo }: {
+    productsInfo: productsType & {
+        id: number
+    }
 }) => {
 
     const {
@@ -19,37 +22,6 @@ const ListItem = ((productsInfo: productsType & {
         description,
     } = productsInfo
 
-    const [cookies, setCookie] = useCookies(["cart"]);
-    const cart = cookies.cart as {
-        [key: string]: {
-            itemName: string;
-            imageSrc: string;
-            quantity: number;
-            price: number;
-        };
-    };
-
-    const { quantity = 0 } = (cart && cart[id]) || {};
-
-    function AddOrReduce(action: AddOrReduceEnum) {
-
-        let newQuantity;
-        if (quantity) {
-            newQuantity = quantity + (action === AddOrReduceEnum.ADD ? 1 : -1);
-        } else {
-            newQuantity = action === AddOrReduceEnum.ADD ? 1 : 0;
-        }
-
-        setCookie("cart", {
-            ...cart,
-            [id]: {
-                itemName: itemName,
-                imageSrc: imageSrc,
-                quantity: newQuantity,
-                price: price,
-            }
-        })
-    }
 
     return (
         <div className="flex gap-6 relative mb-10">
@@ -96,15 +68,11 @@ const ListItem = ((productsInfo: productsType & {
                         </Link>
                     </div>
                 }
-                <div className="flex absolute bottom-0 right-0 gap-2">
-                    <button onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
-                    <input type="number" min={0} defaultValue={quantity} className="w-12 text-center border border-black" />
-                    <button onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
-                </div>
+                <ItemQuantitySet productsInfo={productsInfo} display={"list"} />
             </div>
 
         </div>
     )
-})
+}
 
 export default ListItem

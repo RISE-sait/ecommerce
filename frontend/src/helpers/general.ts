@@ -1,10 +1,13 @@
+import { gql } from "@apollo/client";
+import { DocumentNode } from "graphql";
 import { Session } from "next-auth";
 import { create } from "zustand";
+import client from "./apollo";
 
 export const backendHost =
   process.env.NODE_ENV === "production"
     ? "https://ksportsserver.azurewebsites.net/"
-    : "http://localhost:3000/";
+    : "http://localhost:3001/";
 
 export const PRICE_SORT = ["LOW_TO_HIGH", "HIGH_TO_LOW"] as const;
 
@@ -149,36 +152,34 @@ export async function checkout(
       },
       body: JSON.stringify(itemsForCheckout),
     });
-    const data = await response.json();
-    const url = data.url;
+    const { url }: { url: string } = await response.json();
 
-    if (url) return url;
+    if (url) return url
     throw "no url";
   } catch (error) {
     throw error;
   }
 }
 
-export async function fetchPurchasedItems(orderNumber: string): Promise<any> {
+export async function fetchPurchasedItems(orderNumber: string, email: string): Promise<any> {
   try {
-    const response = await fetch(`${backendHost}getPurchasedItems`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        orderNumber: orderNumber,
-      }),
+    const GetProductsQuery: DocumentNode = gql`
+    query {
+      purchase(orderId: "${orderNumber}", email:"${email}") {
+        deliveryDate,
+        items{
+        itemName
+        quantity
+        price
+        }
+      }
+      }
+      `
+    const { data, networkStatus, error } = await client.query({
+      query: GetProductsQuery,
     });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.paymentInfo;
+    return data;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
+    throw error
   }
 }

@@ -2,8 +2,10 @@ import { ApolloServer } from '@apollo/server';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { stripe } from '.';
+import Stripe from 'stripe';
 
-const prisma: PrismaClient = new PrismaClient();
+export const prisma: PrismaClient = new PrismaClient();
 
 interface InfoQueryArgs {
     subtypes?: string[];
@@ -17,6 +19,50 @@ interface InfoQueryArgs {
 const resolvers = {
     Query: {
         info: async (_: any, args: InfoQueryArgs) => args,
+        purchase: async (_: any, { orderId, email }: { orderId: string, email: string }) => {
+
+            try {
+                const paymentInfo = await stripe.checkout.sessions.retrieve(orderId);
+
+                if (paymentInfo.customer_details?.email !== email) return new Error("Unauthorized")
+
+                const metadata = paymentInfo.metadata as Stripe.Metadata
+
+                const deliveryDate = metadata.deliverDate
+
+                const products: any[] = JSON.parse(metadata.checkoutProducts)
+
+                const items = products.map(product => {
+                    const price = product.price_data.unit_amount / 100
+                    const itemName = product.price_data.product_data.name
+                    const quantity = product.quantity
+
+                    return {
+                        itemName, quantity, price
+                    }
+                })
+
+                return {
+                    items,
+                    deliveryDate
+                }
+            }
+            catch (err) {
+                throw err
+            }
+        }
+    },
+    Mutation: {
+        addPurchase: async (_: any, { orderId, email }: { orderId: string, email: string }) => {
+            await prisma.purchases.create({
+                data: {
+                    email: email,
+                    stripe_purchase_id: orderId
+                }
+            })
+
+            return true
+        }
     },
     InfoQueryType: {
         subtypes: async (parent: any) => {
@@ -63,15 +109,20 @@ const resolvers = {
 
                 if (itemName) return prisma.products.findMany({ where: { itemName: { contains: itemName, mode: "insensitive" } } });
 
+                let where: Prisma.productsWhereInput = {
+                    price: { ...(min && { gte: min }), ...(max && { lte: max }) }
+                };
+
+                if (subtypes && subtypes.length > 0) {
+                    where.AND = await Promise.all(subtypes.map(async (subtype: string, idx: number) => ({
+                        [`category_level${idx}`]: {
+                            equals: subtype
+                        }
+                    })))
+                }
+
                 const products = await prisma.products.findMany({
-                    where: {
-                        price: { ...(min && { gte: min }), ...(max && { lte: max }) },
-                        AND: await Promise.all(subtypes.map(async (subtype: string, idx: number) => ({
-                            [`category_level${idx}`]: {
-                                equals: subtype
-                            }
-                        }))) as Prisma.productsWhereInput[]
-                    },
+                    where,
                     orderBy: { price: sortType === "HIGH_TO_LOW" ? "desc" : "asc" },
                     take: showAmt ? showAmt : 10,
                 });

@@ -1,5 +1,5 @@
 import express from "express";
-import server from "./gqlServer";
+import server, { prisma } from "./gqlServer";
 import cors from "cors";
 import { expressMiddleware } from '@apollo/server/express4';
 import Stripe from "stripe";
@@ -7,7 +7,7 @@ import Stripe from "stripe";
 const apiKey = process.env.KSPORTS_STRIPE_API_KEY;
 
 // const domain = "https://k-sports.vercel.app";
-const domain = "http://localhost:3001";
+const domain = "http://localhost:3000";
 
 const stripe = new Stripe(apiKey!!);
 
@@ -66,21 +66,11 @@ app.post("/checkout", async (req, res) => {
   }
 });
 
-app.post("/getPurchasedItems", async (req, res) => {
-  try {
-    const { orderNumber } = req.body;
-
-    const paymentInfo = await stripe.checkout.sessions.retrieve(orderNumber);
-    res.json({ paymentInfo });
-  } catch (err) {
-    res.json({ error: err });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Server ready at http://localhost:${PORT}`);
 });
 
+export { stripe }
 export default app;
