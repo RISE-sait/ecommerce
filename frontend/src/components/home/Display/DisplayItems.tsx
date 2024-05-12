@@ -1,4 +1,4 @@
-import { productsStorageType } from "../../helpers/general";
+import { productsStorageType } from "../../../helpers/general";
 import GridItem from "./GridItem";
 import ListItem from "./ListItem";
 
@@ -6,13 +6,13 @@ export enum AddOrReduceEnum {
   ADD, REDUCE
 }
 
-const ProductsDisplay = ({
+export default function ProductsDisplay({
   products,
   isDisplayGrid
 }: {
   products: productsStorageType;
   isDisplayGrid: boolean
-}) => {
+}) {
 
   return products.size > 0 ? (
     <div
@@ -41,5 +41,3 @@ const ProductsDisplay = ({
 }
 
 const NoItemsToDisplay = () => <h3 className="relative left-0 mx-auto top-[13vh]">No items to display</h3>
-
-export default ProductsDisplay

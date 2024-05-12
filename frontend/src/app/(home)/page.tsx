@@ -1,37 +1,27 @@
-import DisplayItems from "@/components/home/DisplayItems";
 import client from "@/helpers/apollo";
-import { DocumentNode, NetworkStatus, gql } from "@apollo/client";
-import { PRICE_SORT, productsStorageType, productsType } from "@/helpers/general";
-import CategoryOptions from "@/components/home/CategoryOptions";
+import { DocumentNode, gql } from "@apollo/client";
+import { productsStorageType, productsType } from "@/helpers/general";
+import CategoryOptions from "@/components/home/Options/CategoryOptions";
 import CartIcon from "@/components/home/CartIcon";
-import ShopOptions, { TypeIsDisplayGrid } from "@/components/home/ShopOptions";
-import SSRCategoryOptions from "@/components/home/SSRCategoryOptions";
+import SSRCategoryOptions from "@/components/home/Options/SSRCategoryOptions";
+import MainContent from "@/components/home/MainContent";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
 
-    const sortTypeSearchParams = searchParams.sortType
-    const showAmtSearchParams = searchParams.showAmt
-    const itemNameSearchParams = searchParams.itemName
-    const isDisplayGrid = ((searchParams.displayGrid as TypeIsDisplayGrid) ?? "true") === "true"
+    const { sortType, showAmt, itemName, subtypes } = searchParams
 
-    const subtypesSearchParams: string | null = searchParams.subtypes
+    const gqlParams = {
+        subtypes: subtypes as string | null ? `subtypes: [${(subtypes as string).split(',').map(sub => `"${sub}"`)}]` : "subtypes: []",
+        sortType: sortType && `sortType: \"${sortType}\"`,
+        showAmt: showAmt && `showAmt: ${showAmt}`,
+        itemName: itemName && `itemName: \"${itemName}\"`
+    };
 
-    const subtypesGql = subtypesSearchParams ? `subtypes: [${subtypesSearchParams.split(',').map(sub => `"${sub}"`)}]` : "subtypes: []"
-    const sortTypeGql = sortTypeSearchParams && `sortType: \"${sortTypeSearchParams}\" `
-    const showAmtGql = showAmtSearchParams && `showAmt: ${showAmtSearchParams}`
-    const itemNameGql = itemNameSearchParams && `itemName: \"${itemNameSearchParams}\"`
+    const sortsList = Object.values(gqlParams).filter(Boolean);
 
-    const sortsList: string[] = []
-
-    if (sortTypeGql) sortsList.push(sortTypeGql)
-    if (subtypesGql) sortsList.push(subtypesGql)
-    if (showAmtGql) sortsList.push(showAmtGql)
-    if (itemNameGql) sortsList.push(itemNameGql)
-
-    const gqlParams = sortsList.length > 0 ? `(${sortsList.join(',')})` : ""
     const GetProductsQuery: DocumentNode = gql`
     query {
-  info${gqlParams} {
+        info(${sortsList.join(',')}) {
     products {
       itemName
       authorLink
@@ -55,8 +45,6 @@ export default async function Page({ searchParams }: { searchParams: any }) {
     (data.info.products as (productsType & { id: number })[]).forEach(
         product => {
 
-            // const cartProduct = cookies["cart"] ? cookies["cart"][product.id] : undefined;
-
             displayItems.set(product.id, {
                 description: product.description,
                 authorLink: product.authorLink,
@@ -65,7 +53,6 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                 imageSrc: product.imageSrc,
                 itemName: product.itemName,
                 price: product.price,
-                // quantity: cartProduct ? cartProduct.quantity : 0,
                 quantity: 0
             });
         }
@@ -84,10 +71,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
                 <div className="basis-[75vw]">
                     <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
-                    <ShopOptions />
-                    {
-                        displayItems !== null && <DisplayItems isDisplayGrid={isDisplayGrid} products={displayItems} />
-                    }
+                    <MainContent displayItems={displayItems} />
                 </div>
             </div>
         </div>

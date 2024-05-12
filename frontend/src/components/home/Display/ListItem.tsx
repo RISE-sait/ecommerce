@@ -1,15 +1,13 @@
 import { productsType } from "@/helpers/general";
 import Image from "next/image";
 import Link from "next/link";
-import { useCookies } from "react-cookie";
-import { AddOrReduceEnum } from "./DisplayItems";
-import ItemQuantitySet from "./ItemQuantitySet";
+import ItemQuantitySet from "../ItemQuantitySet";
 
-const ListItem = ({ productsInfo }: {
+export default function ListItem({ productsInfo }: {
     productsInfo: productsType & {
         id: number
     }
-}) => {
+}) {
 
     const {
         id,
@@ -74,5 +72,3 @@ const ListItem = ({ productsInfo }: {
         </div>
     )
 }
-
-export default ListItem

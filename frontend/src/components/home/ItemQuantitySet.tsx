@@ -1,7 +1,7 @@
 "use client"
 
 import { useCookies } from "react-cookie";
-import { AddOrReduceEnum } from "./DisplayItems";
+import { AddOrReduceEnum } from "./Display/DisplayItems";
 import { productsType } from "@/helpers/general";
 
 export default ({ productsInfo, display, show }: {

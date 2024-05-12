@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { productsType } from "@/helpers/general";
-import ItemQuantitySet from "./ItemQuantitySet";
+import ItemQuantitySet from "../ItemQuantitySet";
 import GridItemContent from "./GridItemContent";
 
 const GridItem = ({ productsInfo }: {

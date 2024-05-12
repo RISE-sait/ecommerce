@@ -5,7 +5,6 @@ import { gql } from "@apollo/client";
 import { DocumentNode } from "graphql";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import SSRCategoryOptions from "./SSRCategoryOptions";
 
 export default function CategoryOptions({ children }: { children: JSX.Element }) {
     return <>
@@ -47,9 +46,13 @@ function CategoriesListing({ parentSubtypes, ssrElement }: { parentSubtypes: str
         }
     }, []);
 
-    if (!ssrElement) return <>{subtypes.map(subtype => <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />)}</>
+    const subtypeElements = subtypes.map(subtype => (
+        <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />
+    ));
 
-    return subtypes.length > 0 ? <>{subtypes.map(subtype => <CategoriesListItem parentSubtypes={parentSubtypes} subtype={subtype} />)}</> : <>{ssrElement}</>
+    if (!ssrElement) return <>{subtypeElements}</>
+
+    return <>{subtypes.length > 0 ? subtypeElements : ssrElement}</>
 }
 
 function CategoriesListItem({ subtype, parentSubtypes }: { subtype: string, parentSubtypes: string[] }) {
