@@ -1,7 +1,9 @@
 "use client";
 
-import { fetchPurchasedItems } from "@/helpers/general";
-import { useSession } from "next-auth/react";
+import client from "@/helpers/apollo";
+import { gql } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import { SessionProvider, useSession } from "next-auth/react";
 import { CSSProperties, useRef, useState } from "react";
 
 type purchasedItemsFormat = {
@@ -22,7 +24,11 @@ const styles: { [key: string]: CSSProperties } = {
   },
 };
 
-export default function TrackMyOrderPage() {
+export default () => <SessionProvider>
+  <TrackMyOrderPage />
+</SessionProvider>
+
+function TrackMyOrderPage() {
   const [purchasedItems, setPurchasedItems] = useState<any[]>([]);
   const [deliverDate, setDeliverDate] = useState<Date>();
   const form = useRef<HTMLFormElement>(null);
@@ -48,7 +54,6 @@ export default function TrackMyOrderPage() {
       "number"
     ) as HTMLInputElement;
 
-    console.log(session?.user?.email)
     const { purchase } = await fetchPurchasedItems(orderNumber.value, session?.user?.email as string);
 
     if (purchase) {
@@ -104,4 +109,27 @@ export default function TrackMyOrderPage() {
       </div>
     </>
   );
+}
+
+async function fetchPurchasedItems(orderNumber: string, email: string): Promise<any> {
+  try {
+    const GetProductsQuery: DocumentNode = gql`
+    query {
+      purchase(orderId: "${orderNumber}", email:"${email}") {
+        deliveryDate,
+        items{
+        itemName
+        quantity
+        price
+        }
+      }
+      }
+      `
+    const { data, networkStatus, error } = await client.query({
+      query: GetProductsQuery,
+    });
+    return data;
+  } catch (error) {
+    throw error
+  }
 }

@@ -1,8 +1,5 @@
-import { gql } from "@apollo/client";
-import { DocumentNode } from "graphql";
 import { Session } from "next-auth";
 import { create } from "zustand";
-import client from "./apollo";
 
 export const backendHost =
   process.env.NODE_ENV === "production"
@@ -85,7 +82,7 @@ export type checkoutItemStructure = {
     currency?: string;
     product_data: { name: string };
     unit_amount: number;
-  };
+  },
   quantity: number;
 };
 
@@ -119,8 +116,8 @@ export const useSortAndFilters = create<SortAndFilterType>((set) => ({
 export function getCookieValue(cookieName: string) {
   const cookies = document.cookie.split(";");
 
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
+  for (let j = 0; j < cookies.length; j++) {
+    const cookie = cookies[j].trim();
     if (cookie.startsWith(`${cookieName}=`)) {
       return decodeURIComponent(cookie.substring(cookieName.length + 1));
     }
@@ -141,45 +138,3 @@ export async function fetchData(endpoint: string, requestData: any) {
   return response.json().then((data) => data);
 }
 
-export async function checkout(
-  itemsForCheckout: checkoutItemStructure[]
-): Promise<string> {
-  try {
-    const response = await fetch(`${backendHost}checkout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(itemsForCheckout),
-    });
-    const { url }: { url: string } = await response.json();
-
-    if (url) return url
-    throw "no url";
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function fetchPurchasedItems(orderNumber: string, email: string): Promise<any> {
-  try {
-    const GetProductsQuery: DocumentNode = gql`
-    query {
-      purchase(orderId: "${orderNumber}", email:"${email}") {
-        deliveryDate,
-        items{
-        itemName
-        quantity
-        price
-        }
-      }
-      }
-      `
-    const { data, networkStatus, error } = await client.query({
-      query: GetProductsQuery,
-    });
-    return data;
-  } catch (error) {
-    throw error
-  }
-}

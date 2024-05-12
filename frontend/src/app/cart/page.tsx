@@ -1,15 +1,11 @@
-"use client";
+"use client"
 
-import { backendHost, checkout, checkoutItemStructure } from "@/helpers/general";
-import { useCookies } from "react-cookie";
+import { backendHost, checkoutItemStructure } from "@/helpers/general";
+import { SessionProvider, useSession } from "next-auth/react";
 import Image from "next/image";
-import { Session } from "next-auth"
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { DocumentNode } from "graphql";
-import { gql } from "@apollo/client";
-import client from "@/helpers/apollo";
+import { useCookies } from "react-cookie";
 
 export default function CheckoutPage() {
 
@@ -25,7 +21,7 @@ export default function CheckoutPage() {
       quantity: number;
       price: string;
     };
-  };
+  }
 
   const itemsForCheckout: checkoutItemStructure[] = cart
     ? Object.values(cart).map((item) => {
@@ -53,42 +49,42 @@ export default function CheckoutPage() {
     })
     : []
 
+
   const checkUser = () => !(session?.user) && router.push('http://localhost:3000/api/auth/signin')
 
   useEffect(() => {
     checkUser()
   }, [])
 
+
   return (
-    <>
+    <SessionProvider>
       <div className="max-w-container mx-auto px-4">
         <h1 className="text-4xl font-bold my-6">Cart</h1>
-
+        <EmptyCart />
         {
-          (!cart || Object.keys(cart).length === 0) ? <EmptyCart /> :
+          !cart || Object.keys(cart).length === 0 ? <EmptyCart /> :
             <CheckoutItemsDisplay />
         }
       </div>
-    </>
+    </SessionProvider>
   );
 
   function CheckoutItemsDisplay() {
 
-    const checkoutItems = Object.keys(cart).map((idStr) => {
+    const CheckoutItemsDisplay = Object.keys(cart).map(idStr => {
       const id = parseInt(idStr);
       return CheckoutItemCard({ id });
     });
 
-    const handleCheckout = async () => {
-      const checkoutUrl = await checkout(itemsForCheckout);
-      window.location.href = checkoutUrl;
-    };
-
     return (
       <div style={{ margin: "8vh 4vw" }}>
-        {checkoutItems}
+        {CheckoutItemsDisplay}
         <button
-          onClick={handleCheckout}
+          onClick={async () => {
+            const checkoutUrl = await checkout(itemsForCheckout);
+            window.location.href = checkoutUrl;
+          }}
           className="ml-auto mt-[3vh] block bg-green-500 text-white text-xl py-[1vh] px-[4vw]"
         >
           Checkout
@@ -176,6 +172,28 @@ export default function CheckoutPage() {
         </div>
       </div>
     );
+  }
+
+  async function checkout(
+    itemsForCheckout: checkoutItemStructure[]
+  ): Promise<string> {
+    try {
+      if (itemsForCheckout.length === 0) throw "Nothing to checkout"
+
+      const response = await fetch(`${backendHost}checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itemsForCheckout),
+      });
+      const { url }: { url: string } = await response.json();
+
+      if (url) return url
+      throw "no url";
+    } catch (error) {
+      throw error;
+    }
   }
 
 }
