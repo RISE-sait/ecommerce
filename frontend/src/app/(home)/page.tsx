@@ -3,7 +3,6 @@ import { DocumentNode, gql } from "@apollo/client";
 import { productsStorageType, productsType } from "@/helpers/general";
 import CategoryOptions from "@/components/home/Options/CategoryOptions";
 import CartIcon from "@/components/home/CartIcon";
-import SSRCategoryOptions from "@/components/home/Options/SSRCategoryOptions";
 import MainContent from "@/components/home/MainContent";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
@@ -64,9 +63,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             <h1 className="text-4xl font-bold my-6">Shop</h1>
             <div className="flex justify-between">
                 <div className="basis-[15vw]">
-                    <CategoryOptions>
-                        <SSRCategoryOptions />
-                    </CategoryOptions>
+                    <CategoryOptions />
                 </div>
 
                 <div className="basis-[75vw]">
