@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output = "../src/generated/client"
 }
 
 datasource db {
@@ -19,6 +20,7 @@ model products {
   category_level0 String?
   category_level1 String?
   category_level2 String?
+  category_level3 String?
 }
 
 model Purchases {

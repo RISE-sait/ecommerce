@@ -73,7 +73,7 @@ export default ({ productsInfo, display, show }: {
 
     return display === "list" ? <div className="flex absolute bottom-0 right-0 gap-2">
         <button onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
-        <input type="number" onChange={event => setNewQty(event.target.valueAsNumber)} min={0} defaultValue={quantity} className="w-12 text-center border border-black" />
+        <input type="number" onChange={event => setNewQty(event.target.valueAsNumber)} value={quantity} min={0} defaultValue={quantity} className="w-12 text-center border border-black" />
         <button onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
     </div> :
         <div className={`absolute bottom-0 overflow-hidden transition-all duration-300 bg-white left-0 right-0 w-full ${show ? "h-max py-5" : "h-0"}`}>

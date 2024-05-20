@@ -33,5 +33,6 @@ type Query {
 }
 
 type Mutation {
-  addPurchase(orderId: String!, email: String!): Boolean!
+  addPurchase(orderId: String!, email: String!): Boolean!,
+  seed: Boolean!
 }

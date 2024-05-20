@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model products {
+  id                 Int     @id @default(autoincrement())
+  itemName           String
+  authorLink         String?
+  authorName         String?
+  imageCredit        String?
+  imageSrc           String
+  description String
+  price              Decimal @db.Decimal
+  category_level0 String?
+  category_level1 String?
+  category_level2 String?
+  category_level3 String?
+}
+
+model Purchases {
+  id     Int       @id @default(autoincrement())
+  email  String
+  stripe_purchase_id      String
+}

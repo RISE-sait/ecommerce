@@ -1,17 +1,34 @@
-ARG PROD_ENV=true
-
+# Use the official Node.js image as a base
 FROM node:21.5-alpine as base
 
+# Set the working directory in the container
 WORKDIR /app
 
-COPY package*.json ./
+# Copy package.json and package-lock.json files
+COPY package*.json .
 
-RUN npm install
+ARG NODE_ENV
+
+# Install dependencies
+RUN if [ "$NODE_ENV" = "dev" ]; then \
+    npm i; \
+        else \
+    npm i --production; \
+    fi
 
 COPY . .
 
-RUN npm install prisma && npx prisma generate
+RUN npx prisma generate
 
-RUN npm run build
+# Copy the rest of the application code
+RUN if [ "$NODE_ENV" = "dev" ]; then \
+    npx prisma db push; \
+        else \
+    npx prisma db pull; \
+    fi
 
-CMD ["sh", "-c", "if [ \"$PROD_ENV\" = \"true\" ]; then node dist/index.js; fi"]
+
+
+CMD node dist/index.js
+
+EXPOSE 3000

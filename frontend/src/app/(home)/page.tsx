@@ -60,7 +60,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
     return (
         <div className="max-w-container mx-auto px-4 relative">
             <CartIcon />
-            <h1 className="text-4xl font-bold my-6">Shop</h1>
+            <h1 className="text-4xl font-bold my-6">Shop now</h1>
             <div className="flex justify-between">
                 <div className="basis-[15vw]">
                     <CategoryOptions />

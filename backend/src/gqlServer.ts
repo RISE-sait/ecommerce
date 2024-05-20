@@ -1,9 +1,10 @@
 import { ApolloServer } from '@apollo/server';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from './generated/client';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { stripe } from '.';
 import Stripe from 'stripe';
+import seed from './seed';
 
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -62,6 +63,10 @@ const resolvers = {
             })
 
             return true
+        },
+        seed: async () => {
+            await seed()
+            return true
         }
     },
     InfoQueryType: {
@@ -97,7 +102,7 @@ const resolvers = {
                     },
                 });
 
-                return values.map(value => value[nextLayerCol]).filter(value => value !== null)
+                return new Set(values.map(value => value[nextLayerCol]).filter(value => value !== null))
 
             } catch (err) {
                 console.log(err);

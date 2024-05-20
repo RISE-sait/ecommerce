@@ -23,7 +23,7 @@ export default function CartIcon() {
         if (cart) {
             setCartAmt(Object.values(cart).reduce((acc, item) => acc + item.quantity, 0))
         }
-    }, [])
+    }, [cookies.cart])
 
     return <Link href="/cart">
         <div className={`fixed top-36 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-4 pt-7 pl-4 pr-8 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>

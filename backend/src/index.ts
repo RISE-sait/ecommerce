@@ -1,5 +1,5 @@
 import express from "express";
-import server, { prisma } from "./gqlServer";
+import server from "./gqlServer";
 import cors from "cors";
 import { expressMiddleware } from '@apollo/server/express4';
 import Stripe from "stripe";
@@ -21,7 +21,7 @@ const startServer = async () => {
 
 startServer();
 
-app.get('/', (_, res) => res.send('Welcome to ksports backend'));
+app.get('/', (_, res) => res.send('Welcome to KLints under bunker'));
 
 const allowedOrigins = [
   domain,
@@ -39,7 +39,7 @@ const corsOptions = {
   }
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.post("/checkout", async (req, res) => {
   const checkoutProducts = req.body;

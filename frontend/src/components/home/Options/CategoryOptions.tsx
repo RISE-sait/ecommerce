@@ -24,7 +24,6 @@ async function InitialCategoriesListing() {
     const { data, networkStatus, error } = await client.query({
         query: GetProductsQuery,
     });
-
     const subtypes: string[] = data.info.subtypes
 
     return <>{subtypes.map(subtype => (
