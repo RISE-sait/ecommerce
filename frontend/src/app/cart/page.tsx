@@ -16,7 +16,7 @@ export default () => (
 function CheckoutPage() {
 
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
 
   const [cookies, setCookie] = useCookies(["cart"]);
 
@@ -29,13 +29,12 @@ function CheckoutPage() {
     };
   }>({})
 
-  const checkUser = () => !(session?.user) && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
+  const checkUser = () => status === "unauthenticated" && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
 
   useEffect(() => {
     setCart(cookies.cart)
     checkUser()
-
-  }, [])
+  }, [cookies])
 
   const itemsForCheckout: checkoutItemStructure[] = cart
     ? Object.values(cart).map((item) => {
