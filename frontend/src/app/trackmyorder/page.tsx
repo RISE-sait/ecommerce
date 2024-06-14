@@ -1,16 +1,19 @@
 "use client";
 
-import client from "@/helpers/apollo";
-import { gql } from "@apollo/client";
-import { DocumentNode } from "graphql";
+import { backendHost } from "@/helpers/general";
 import { SessionProvider, useSession } from "next-auth/react";
 import { CSSProperties, useRef, useState } from "react";
 
 type purchasedItemsFormat = {
-  itemName: string,
-  quantity: number,
   price: number,
+  name: string,
+  quantity: number
 };
+
+type trackedItemsType = {
+  deliveryDate: string,
+  products: purchasedItemsFormat[]
+}
 
 const styles: { [key: string]: CSSProperties } = {
   inputs: {
@@ -29,47 +32,51 @@ export default () => <SessionProvider>
 </SessionProvider>
 
 function TrackMyOrderPage() {
-  const [purchasedItems, setPurchasedItems] = useState<any[]>([]);
+  const [purchasedItems, setPurchasedItems] = useState<purchasedItemsFormat[]>([]);
   const [deliverDate, setDeliverDate] = useState<Date>();
-  const form = useRef<HTMLFormElement>(null);
+  const orderIdInput = useRef<HTMLInputElement>(null);
+  const [deliverStatus, setDeliverStatus] = useState<string>()
+
+
   const { data: session } = useSession()
-
-
-  let deliverStatus;
 
   const today = new Date();
 
   if (deliverDate) {
     const deliverDateString = deliverDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-    deliverStatus = (today < deliverDate) ? `Products will be delivered at ${deliverDateString}` :
-      (today === deliverDate) ? `Products will be delivered today` :
-        `Products have been delivered`;
+    setDeliverStatus(() => {
+      if (today < deliverDate) return `Products will be delivered at ${deliverDateString}`
+      else if (today === deliverDate) return `Products will be delivered today`
+      else return `Products should have been delivered. If not, please contact KSports`
+    }
+    )
   }
 
   const getPurchasedItems = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const orderNumber = form.current?.elements.namedItem(
-      "number"
-    ) as HTMLInputElement;
+    const orderIdElement = orderIdInput.current
 
-    const { purchase } = await fetchPurchasedItems(orderNumber.value, session?.user?.email as string);
+    if (orderIdElement === null) throw "Try again"
 
-    if (purchase) {
-      setDeliverDate(new Date(purchase["deliverDate"]))
+    const { deliveryDate, products } = await fetchPurchasedItems(orderIdElement.value, session?.user?.email as string);
 
-      setPurchasedItems(purchase.items);
+    if (deliveryDate && products.length > 0) {
+      setDeliverDate(new Date(deliveryDate))
+
+      setPurchasedItems(products);
     }
   };
 
   return (
     <>
       <div className="my-[6vh] mx-[4vw]">
-        <form ref={form} onSubmit={getPurchasedItems}>
+        <form onSubmit={getPurchasedItems}>
           <p className="text-center my-[5vh] text-3xl">Track Order Status</p>
           <input
-            name="number"
+            ref={orderIdInput}
+            name="orderId"
             type="text"
             style={styles.inputs}
             placeholder="   Order Number"
@@ -93,7 +100,7 @@ function TrackMyOrderPage() {
                     key={index}
                     className="flex justify-evenly items-center rounded-md mx-0 my-[2vh] py-[3vh] border border-black"
                   >
-                    <p className="text-xl">{item.itemName}</p>
+                    <p className="text-xl">{item.name}</p>
                     <p className="text-xl">
                       Price: ${item.price}
                     </p>
@@ -111,24 +118,14 @@ function TrackMyOrderPage() {
   );
 }
 
-async function fetchPurchasedItems(orderNumber: string, email: string): Promise<any> {
+async function fetchPurchasedItems(orderId: string, email: string): Promise<trackedItemsType> {
   try {
-    const GetProductsQuery: DocumentNode = gql`
-    query {
-      purchase(orderId: "${orderNumber}", email:"${email}") {
-        deliveryDate,
-        items{
-        itemName
-        quantity
-        price
-        }
-      }
-      }
-      `
-    const { data, networkStatus, error } = await client.query({
-      query: GetProductsQuery,
-    });
-    return data;
+
+    const response = await fetch(`${backendHost}Checkout?orderId=${orderId}&email=${email}`)
+    const items: trackedItemsType = await response.json()
+
+    return items
+
   } catch (error) {
     throw error
   }

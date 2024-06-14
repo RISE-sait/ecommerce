@@ -1,34 +1,22 @@
-# Use the official Node.js image as a base
-FROM node:21.5-alpine as base
-
-# Set the working directory in the container
+# Use the official ASP.NET Core runtime as a parent image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# Copy package.json and package-lock.json files
-COPY package*.json .
-
-ARG NODE_ENV
-
-# Install dependencies
-RUN if [ "$NODE_ENV" = "dev" ]; then \
-    npm i; \
-        else \
-    npm i --production; \
-    fi
-
+# Use the SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["backend.csproj", "./"]
+RUN dotnet restore "./backend.csproj"
 COPY . .
+WORKDIR "/src/."
+RUN dotnet build "backend.csproj" -c Release -o /app/build
 
-RUN npx prisma generate
+FROM build AS publish
+RUN dotnet publish "backend.csproj" -c Release -o /app/publish
 
-# Copy the rest of the application code
-RUN if [ "$NODE_ENV" = "dev" ]; then \
-    npx prisma db push; \
-        else \
-    npx prisma db pull; \
-    fi
-
-
-
-CMD node dist/index.js
-
-EXPOSE 3000
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+EXPOSE 8080
+EXPOSE 443
+ENTRYPOINT ["dotnet", "backend.dll"]

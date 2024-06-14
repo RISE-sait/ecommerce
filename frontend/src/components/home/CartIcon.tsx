@@ -26,10 +26,10 @@ export default function CartIcon() {
     }, [cookies.cart])
 
     return <Link href="/cart">
-        <div className={`fixed top-36 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-4 pt-7 pl-4 pr-8 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>
+        <div className={`fixed top-28 z-20 right-5 rounded-md text-3xl h-fit aspect-square pb-2 pt-7 pl-4 pr-7 bg-white shadow-2xl shadow-black border border-[rgb(229, 231, 235)]`}>
             <FaCartShopping className="fill-gray-500" />
             <p className="text-base font-semibold">Cart</p>
-            <p className="absolute top-2 right-2 bg-blue-500 w-8 text-center aspect-square text-2xl rounded-full">{
+            <p className="absolute top-2 right-2 bg-blue-500 w-7 text-center aspect-square text-xl rounded-full">{
                 cartAmt
             }</p>
         </div>

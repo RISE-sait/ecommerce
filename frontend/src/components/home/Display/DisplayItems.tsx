@@ -16,7 +16,7 @@ export default function ProductsDisplay({
 
   return products.size > 0 ? (
     <div
-      className={`grid ${isDisplayGrid ? "grid-cols-3 gap-10" : "grid-cols-1"}`}
+      className={`grid ${isDisplayGrid ? "grid-cols-4 gap-10" : "grid-cols-1"}`}
     >
       {Array.from(products.keys()).map(id => {
 

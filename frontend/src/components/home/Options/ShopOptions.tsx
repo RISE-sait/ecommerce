@@ -3,8 +3,6 @@
 import { PRICE_SORT } from "@/helpers/general";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { BsGridFill } from "react-icons/bs";
-import { ImList } from "react-icons/im";
 
 export type TypeIsDisplayGrid = "true" | "false" | null
 
@@ -36,7 +34,7 @@ export default function ShopOptions() {
             <label>Show: </label>
             <select className="border-2 border-black" onChange={event => {
                 const current = new URLSearchParams(Array.from(searchParams.entries()))
-                current.set("showAmt", event.target.value)
+                current.set("limit", event.target.value)
 
                 router.push(`${pathname}?${current.toString()}`)
             }}>

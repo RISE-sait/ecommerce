@@ -1,9 +1,9 @@
 export const backendHost =
   process.env.NODE_ENV === "production"
-    ? "https://ksportsserver.azurewebsites.net/"
-    : "http://localhost:8080/";
+    ? "https://ksportsbackend.azurewebsites.net/api/"
+    : "http://localhost:5204/api/";
 
-export const PRICE_SORT = ["LOW_TO_HIGH", "HIGH_TO_LOW"] as const;
+export const PRICE_SORT = ["price_asc", "price_desc"] as const;
 
 export type SortType = (typeof PRICE_SORT)[number];
 
@@ -19,12 +19,12 @@ export type productsType = {
 };
 
 export type checkoutItemStructure = {
-  price_data: {
-    currency?: string;
-    product_data: { name: string };
-    unit_amount: number;
+  PriceData: {
+    Currency: string;
+    ProductData: { Name: string };
+    UnitAmount: number;
   },
-  quantity: number;
+  Quantity: number;
 };
 
 export type productsStorageType = Map<number, productsType>;

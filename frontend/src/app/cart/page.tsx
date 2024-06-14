@@ -4,7 +4,7 @@ import { backendHost, checkoutItemStructure } from "@/helpers/general";
 import { SessionProvider, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
 export default function CheckoutPage() {
@@ -14,54 +14,53 @@ export default function CheckoutPage() {
 
   const [cookies, setCookie] = useCookies(["cart"]);
 
-  const cart = cookies.cart as {
+  const [cart, setCart] = useState<{
     [key: string]: {
       itemName: string;
       imageSrc: string;
       quantity: number;
       price: string;
     };
-  }
+  }>({})
+
+  const checkUser = () => !(session?.user) && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
+
+  useEffect(() => {
+    setCart(cookies.cart)
+    checkUser()
+
+  }, [])
 
   const itemsForCheckout: checkoutItemStructure[] = cart
     ? Object.values(cart).map((item) => {
       const productName = item.itemName;
-      const priceInCent = parseInt(item.price) * 100;
+      const priceInCent = parseInt(item.price);
       const amount = item.quantity!!;
 
       // Assuming default currency is USD, modify as needed
       const currency = "USD";
 
-      // Create the price_data structure
-      const price_data = {
-        currency: currency,
-        product_data: {
-          name: productName,
+      // Create the PriceData structure
+      const priceData = {
+        Currency: currency,
+        ProductData: {
+          Name: productName,
         },
-        unit_amount: priceInCent,
+        UnitAmount: priceInCent,
       };
 
       // Return the item structure
       return {
-        price_data: price_data,
-        quantity: amount,
+        PriceData: priceData,
+        Quantity: amount,
       };
     })
-    : []
-
-
-  const checkUser = () => !(session?.user) && router.push('http://localhost:3000/api/auth/signin')
-
-  useEffect(() => {
-    checkUser()
-  }, [])
-
+    : [];
 
   return (
     <SessionProvider>
       <div className="max-w-container mx-auto px-4">
         <h1 className="text-4xl font-bold my-6">Cart</h1>
-        <EmptyCart />
         {
           !cart || Object.keys(cart).length === 0 ? <EmptyCart /> :
             <CheckoutItemsDisplay />
@@ -180,7 +179,7 @@ export default function CheckoutPage() {
     try {
       if (itemsForCheckout.length === 0) throw "Nothing to checkout"
 
-      const response = await fetch(`${backendHost}checkout`, {
+      const response = await fetch(`${backendHost}Checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

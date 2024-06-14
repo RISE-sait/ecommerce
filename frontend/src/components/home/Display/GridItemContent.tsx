@@ -17,7 +17,7 @@ export default function ({ productsInfo }: {
 
     return (
         <>
-            <div className="relative basis-[40%] min-h-[40vh] ">
+            <div className="relative min-h-[35vh] ">
                 <Image
                     quality={50}
                     fill={true}

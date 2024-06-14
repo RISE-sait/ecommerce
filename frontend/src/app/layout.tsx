@@ -20,11 +20,11 @@ export default function RootLayout({
       <body className={`max-w-[100vw]`}>
         <SessionProvider>
           <Header />
-        </SessionProvider>
 
-        <div className='mx-8'>
-          {children}
-        </div>
+          <div className='mx-8'>
+            {children}
+          </div>
+        </SessionProvider>
 
       </body>
 

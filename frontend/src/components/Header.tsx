@@ -31,16 +31,14 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState<string>();
   const [showUserOptions, setShowUserOptions] = useState(false)
 
-  // Update searchTerm state on user input
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
 
-  // Apply debouncing effect
   useEffect(() => {
     const current = new URLSearchParams(Array.from(searchParams.entries()))
 
     const handler = setTimeout(() => {
-      if (searchTerm) current.set("itemName", searchTerm)
-      else if (searchTerm === undefined || searchTerm === "") current.delete("itemName")
+      if (searchTerm) current.set("contains", searchTerm)
+      else if (searchTerm === undefined || searchTerm === "") current.delete("contains")
 
       router.push(`${pathname}?${current.toString()}`)
     }, 500)

@@ -1,47 +1,30 @@
-import client from "@/helpers/apollo";
-import { DocumentNode, gql } from "@apollo/client";
-import { productsStorageType, productsType } from "@/helpers/general";
-import CategoryOptions from "@/components/home/Options/CategoryOptions";
+import { backendHost, productsStorageType, productsType } from "@/helpers/general";
+import RelatedWordsOptions from "@/components/home/Options/RelatedWordsOptions";
 import CartIcon from "@/components/home/CartIcon";
 import MainContent from "@/components/home/MainContent";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
 
-    const { sortType, showAmt, itemName, subtypes } = searchParams
+    const { sortType, limit, contains, keywords } = searchParams
 
-    const gqlParams = {
-        subtypes: subtypes as string | null ? `subtypes: [${(subtypes as string).split(',').map(sub => `"${sub}"`)}]` : "subtypes: []",
-        sortType: sortType && `sortType: \"${sortType}\"`,
-        showAmt: showAmt && `showAmt: ${showAmt}`,
-        itemName: itemName && `itemName: \"${itemName}\"`
+    const queryParams = {
+        sortType: sortType && `sort=${sortType}`,
+        limit: limit && `limit=${limit}`,
+        contains: contains && `contains=${contains}`,
+        keywords: keywords && `keywords=${keywords}`
     };
 
-    const sortsList = Object.values(gqlParams).filter(Boolean);
+    let queryString = Object.values(queryParams)
+        .filter(param => param)
+        .join('&');
 
-    const GetProductsQuery: DocumentNode = gql`
-    query {
-        info(${sortsList.join(',')}) {
-    products {
-      itemName
-      authorLink
-      id
-      description
-      authorName
-      imageCredit
-      imageSrc
-      price
-      category_level0
-      category_level1
-    }
-  }
-}`
+    queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
 
-    const { data, networkStatus, error } = await client.query({
-        query: GetProductsQuery,
-    });
+    const response = await fetch(`${backendHost}Products${queryString}`, { "cache": "no-cache" })
+    const products = await response.json()
 
     const displayItems: productsStorageType = new Map();
-    (data.info.products as (productsType & { id: number })[]).forEach(
+    (products as (productsType & { id: number })[]).forEach(
         product => {
 
             displayItems.set(product.id, {
@@ -61,16 +44,10 @@ export default async function Page({ searchParams }: { searchParams: any }) {
         <div className="max-w-container mx-auto px-4 relative">
             <CartIcon />
             <h1 className="text-4xl font-bold my-6">Shop now</h1>
-            <div className="flex justify-between">
-                <div className="basis-[15vw]">
-                    <CategoryOptions />
-                </div>
+            <RelatedWordsOptions searchParams={searchParams} />
 
-                <div className="basis-[75vw]">
-                    <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
-                    <MainContent displayItems={displayItems} />
-                </div>
-            </div>
+            <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
+            <MainContent displayItems={displayItems} />
         </div>
     );
 };
