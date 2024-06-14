@@ -7,7 +7,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-export default function CheckoutPage() {
+export default () => (
+  <SessionProvider>
+    <CheckoutPage />
+  </SessionProvider>
+)
+
+function CheckoutPage() {
 
   const router = useRouter()
   const { data: session } = useSession()

@@ -4,7 +4,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaSearch, FaUser, FaCaretDown } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 
 type NavLinkProp = {
   title: string,
@@ -22,7 +22,7 @@ export const NavLinks: NavLinkProp[] = [
   }
 ]
 
-export default function Header() {
+function Header() {
   const searchParams = useSearchParams();
   const router = useRouter()
   const pathname = usePathname()
@@ -98,3 +98,9 @@ export default function Header() {
     </div>
   );
 };
+
+export default () => (
+  <SessionProvider>
+    <Header />
+  </SessionProvider>
+)

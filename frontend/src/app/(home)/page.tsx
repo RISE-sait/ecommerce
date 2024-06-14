@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
     queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
 
-    const response = await fetch(`${backendHost}Products${queryString}`, { "cache": "no-cache" })
+    const response = await fetch(`${backendHost}Products${queryString}`)
     const products = await response.json()
 
     const displayItems: productsStorageType = new Map();
