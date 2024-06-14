@@ -2,7 +2,11 @@ import { backendHost, productsStorageType, productsType } from "@/helpers/genera
 import RelatedWordsOptions from "@/components/home/Options/RelatedWordsOptions";
 import CartIcon from "@/components/home/CartIcon";
 import MainContent from "@/components/home/MainContent";
-import Head from "next/head";
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: 'Home',
+}
 
 export default async function Page({ searchParams }: { searchParams: any }) {
 
@@ -43,9 +47,6 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
     return (
         <div className="max-w-container mx-auto px-4 relative">
-            <Head>
-                <title>Home</title>
-            </Head>
             <CartIcon />
             <h1 className="text-4xl font-bold my-6">Shop now</h1>
             <RelatedWordsOptions searchParams={searchParams} />

@@ -73,9 +73,7 @@ function TrackMyOrderPage() {
   return (
     <>
       <div className="my-[6vh] mx-[4vw]">
-        <Head>
-          <title>Track My Order</title>
-        </Head>
+        <title>Track My Order</title>
         <form onSubmit={getPurchasedItems}>
           <p className="text-center my-[5vh] text-3xl">Track Order Status</p>
           <input
