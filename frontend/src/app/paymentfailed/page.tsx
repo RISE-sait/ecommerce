@@ -1,6 +1,6 @@
-import { Head } from "next/document"
+import Head from "next/head"
 
-export default () => {
+export default function Page() {
     return <div>
         <Head>
             <title>Payment failed</title>
