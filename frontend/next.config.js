@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output:"standalone",
     eslint:{
         ignoreDuringBuilds:true
     },
@@ -9,7 +8,7 @@ const nextConfig = {
            
             {
                 protocol:'https',
-                hostname:"klintstorage.blob.core.windows.net",
+                hostname:"klintstorage1.blob.core.windows.net",
             }
         ]
     }

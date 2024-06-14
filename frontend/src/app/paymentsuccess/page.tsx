@@ -1,37 +1,6 @@
-"use client"
-
-import { DocumentNode } from "graphql";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-
 export default ({ searchParams }: { searchParams: { orderID: string } }) => {
-    const { data: session } = useSession()
 
     const orderId = searchParams.orderID
-
-    // useEffect(() => {
-
-    //     if (!session?.user?.email) return
-
-    //     const email = session.user.email;
-
-    //     (async () => {
-    //         const query: DocumentNode = gql`
-    //     mutation {
-    //   addPurchase(orderId:"${orderId}", email:"${email}") 
-    // }
-    // `
-    //         const { data, errors } = await client.mutate({
-    //             mutation: query,
-    //         })
-
-    //         if (errors) console.error(errors)
-
-    //     })()
-
-
-    // }, [session?.user?.email])
-
 
     return <div className="text-center">
 
