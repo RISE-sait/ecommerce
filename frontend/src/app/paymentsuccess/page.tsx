@@ -1,3 +1,5 @@
+import Head from "next/head"
+
 export default ({ searchParams }: { searchParams: { orderID: string } }) => {
 
     const orderId = searchParams.orderID
@@ -5,6 +7,9 @@ export default ({ searchParams }: { searchParams: { orderID: string } }) => {
     return <div className="text-center">
 
         <div className="my-[5vh] px-[5vw]">
+            <Head>
+                <title>Payment success</title>
+            </Head>
             <h1>Payment Success</h1>
             <h3 className="my-[5vh] break-words">Order ID: {orderId}</h3>
             <h3>Your order ID allows you to keep track of your order at</h3>

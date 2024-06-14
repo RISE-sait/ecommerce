@@ -2,6 +2,7 @@
 
 import { backendHost } from "@/helpers/general";
 import { SessionProvider, useSession } from "next-auth/react";
+import Head from "next/head";
 import { CSSProperties, useRef, useState } from "react";
 
 type purchasedItemsFormat = {
@@ -72,6 +73,9 @@ function TrackMyOrderPage() {
   return (
     <>
       <div className="my-[6vh] mx-[4vw]">
+        <Head>
+          <title>Track My Order</title>
+        </Head>
         <form onSubmit={getPurchasedItems}>
           <p className="text-center my-[5vh] text-3xl">Track Order Status</p>
           <input

@@ -2,7 +2,6 @@ import { backendHost } from "@/helpers/general";
 import RelatedWord from "./RelatedWord"
 
 type WordType = {
-    id: number,
     word: string,
     productCount: number
 }
@@ -29,7 +28,7 @@ export default async function RelatedWordsOptions({ searchParams }: { searchPara
         <h3 className="text-2xl  font-semibold mt-4">Shop by related keywords</h3>
         <div className="flex flex-wrap gap-x-7 gap-y-5 mb-16 mt-4">
             {
-                data.map(item => <RelatedWord word={item.word} count={item.productCount} key={item.id} />)
+                data.map(item => <RelatedWord word={item.word} count={item.productCount} key={item.word} />)
             }
         </div>
     </>

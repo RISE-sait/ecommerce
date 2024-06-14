@@ -1,3 +1,10 @@
+import { Head } from "next/document"
+
 export default () => {
-    return <div>Payment Failed</div>
+    return <div>
+        <Head>
+            <title>Payment failed</title>
+        </Head>
+        <h4>Payment Failed</h4>
+    </div>
 }

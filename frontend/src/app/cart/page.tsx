@@ -2,6 +2,7 @@
 
 import { backendHost, checkoutItemStructure } from "@/helpers/general";
 import { SessionProvider, useSession } from "next-auth/react";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,7 +17,7 @@ export default () => (
 function CheckoutPage() {
 
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { status } = useSession()
 
   const [cookies, setCookie] = useCookies(["cart"]);
 
@@ -65,6 +66,9 @@ function CheckoutPage() {
   return (
     <SessionProvider>
       <div className="max-w-container mx-auto px-4">
+        <Head>
+          <title>Cart</title>
+        </Head>
         <h1 className="text-4xl font-bold my-6">Cart</h1>
         {
           !cart || Object.keys(cart).length === 0 ? <EmptyCart /> :

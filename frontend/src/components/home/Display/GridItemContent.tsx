@@ -21,7 +21,7 @@ export default function ({ productsInfo }: {
                 <Image
                     quality={50}
                     fill={true}
-                    sizes="100%"
+                    objectFit="contain"
                     alt="product"
                     src={imageSrc}
                 />
