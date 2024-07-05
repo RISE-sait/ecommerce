@@ -22,8 +22,8 @@ export default function ListItem({ productsInfo }: {
 
 
     return (
-        <div className="flex gap-6 relative mb-10">
-            <div className="relative min-h-[30vh] max-h-[35vh] aspect-square basis-[20%]">
+        <div className="flex gap-6 relative mb-10 items-center justify-center">
+            <div className="relative ml-2 md:ml-0 max-h-[35vh] md:min-h-[30vh] aspect-square basis-[30%] md:basis-[20%]">
                 <Image
                     className="rounded-md"
                     quality={50}
@@ -33,8 +33,8 @@ export default function ListItem({ productsInfo }: {
                     src={imageSrc}
                 />
             </div>
-            <div className="basis-[60%] text-2xl flex flex-col justify-between relative">
-                <div>
+            <div className="basis-[60%] md:basis-[60%] text-2xl flex flex-col justify-between relative">
+                <div className="my-5">
                     <h4 className="font-bold">{itemName}</h4>
                     <h4 className="text-base font-normal" >{description}</h4>
                 </div>

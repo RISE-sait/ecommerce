@@ -8,7 +8,7 @@ import DisplayOrientationSelections from "./Options/DisplayOrientationSelections
 
 export default function MainContent({ displayItems }: { displayItems: productsStorageType }) {
 
-    const [isDisplayGrid, setIsDisplayGrid] = useState(true)
+    const [isDisplayGrid, setIsDisplayGrid] = useState(false)
 
     return <>
         <div className="flex justify-between items-center">

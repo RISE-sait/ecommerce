@@ -11,8 +11,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240614013827_Init")]
-    partial class Init
+    [Migration("20240705032147_AutoGenerateId")]
+    partial class AutoGenerateId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,27 +91,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductRelatedWords", (string)null);
-                });
-
-            modelBuilder.Entity("backend.Models.Purchase", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("StripePurchaseId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Purchases", (string)null);
                 });
 
             modelBuilder.Entity("ProductProductRelatedWord", b =>

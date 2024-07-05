@@ -13,6 +13,14 @@ namespace backend.Data
             modelBuilder.Entity<ProductRelatedWord>().HasKey(prw => prw.Id);
 
             modelBuilder.Entity<Product>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ProductRelatedWord>()
+                .Property(prw => prw.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Product>()
         .Property(p => p.Price)
         .HasColumnType("decimal(10,2)");
 

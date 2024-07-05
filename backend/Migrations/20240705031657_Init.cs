@@ -44,20 +44,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Purchases",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    StripePurchaseId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Purchases", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductProductRelatedWord",
                 columns: table => new
                 {
@@ -92,9 +78,6 @@ namespace backend.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ProductProductRelatedWord");
-
-            migrationBuilder.DropTable(
-                name: "Purchases");
 
             migrationBuilder.DropTable(
                 name: "ProductRelatedWords");

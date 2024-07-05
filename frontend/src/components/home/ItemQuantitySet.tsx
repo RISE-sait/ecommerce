@@ -73,14 +73,12 @@ export default ({ productsInfo, display, show }: {
 
     return display === "list" ? <div className="flex absolute bottom-0 right-0 gap-2">
         <button onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
-        <input type="number" onChange={event => setNewQty(event.target.valueAsNumber)} value={quantity} min={0} defaultValue={quantity} className="w-12 text-center border border-black" />
+        <input type="number" onChange={event => setNewQty(event.target.valueAsNumber)} value={quantity} min={0} className="w-12 text-center border border-black" />
         <button onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
     </div> :
-        <div className={`absolute bottom-0 overflow-hidden transition-all duration-300 bg-white left-0 right-0 w-full ${show ? "h-max py-5" : "h-0"}`}>
-            <div className="h-full flex justify-center">
-                <button className="border border-r-0 border-black size-10 text-xl text-center font-semibold" onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
-                <input type="number" min={0} value={quantity} className="w-12 text-center border border-black" onChange={event => setNewQty(event.target.valueAsNumber)} />
-                <button className="border border-l-0 border-black size-10 text-xl px-3 text-center font-semibold" onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
-            </div>
+        <div className={`absolute bottom-0 overflow-hidden transition-all duration-300 bg-white left-0 right-0 w-full ${show ? "h-max py-5" : "h-0"} flex justify-center text-sm md:text-xl`}>
+            <button className="border border-r-0 border-black size-10 text-center font-semibold" onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
+            <input type="number" min={0} value={quantity} className="w-12 text-center border border-black" onChange={event => setNewQty(event.target.valueAsNumber)} />
+            <button className="border border-l-0 border-black size-10 px-3 text-center font-semibold" onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
         </div>
 }
