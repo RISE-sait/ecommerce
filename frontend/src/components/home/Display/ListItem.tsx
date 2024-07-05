@@ -10,7 +10,6 @@ export default function ListItem({ productsInfo }: {
 }) {
 
     const {
-        id,
         itemName,
         price,
         imageSrc,
@@ -22,7 +21,7 @@ export default function ListItem({ productsInfo }: {
 
 
     return (
-        <div className="flex gap-6 relative mb-10 items-center justify-center">
+        <div className="flex gap-6 relative my-5 items-center justify-center">
             <div className="relative ml-2 md:ml-0 max-h-[35vh] md:min-h-[30vh] aspect-square basis-[30%] md:basis-[20%]">
                 <Image
                     className="rounded-md"
@@ -36,7 +35,7 @@ export default function ListItem({ productsInfo }: {
             <div className="basis-[60%] md:basis-[60%] text-2xl flex flex-col justify-between relative">
                 <div className="my-5">
                     <h4 className="font-bold">{itemName}</h4>
-                    <h4 className="text-base font-normal" >{description}</h4>
+                    <h4 className="text-base font-normal line-clamp-4" >{description}</h4>
                 </div>
                 <h3>
                     ${price.toString().includes('.') ? price : price.toFixed(2)}
