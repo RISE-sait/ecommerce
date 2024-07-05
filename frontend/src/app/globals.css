@@ -16,3 +16,7 @@
 input {
     caret-color: black;
 }
+
+body.sidenav-open main {
+    display: none;
+  }

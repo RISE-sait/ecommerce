@@ -1,10 +1,7 @@
-"use client"
-
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
-import React, { useState } from 'react'
-import SideNav from '@/components/SideNav'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,18 +11,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
 
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
-
   return (
     <html lang="en">
 
-      <body className={`max-w-[100vw]`}>
-        <Header setIsSideNavOpen={setIsSideNavOpen} />
+      <body className={`max-w-[100vw]`} id='body'>
+        <Header />
 
-        <div className={`${isSideNavOpen && "hidden"} md:mx-8`}>
+        <main className="md:mx-8">
           {children}
-        </div>
-        <SideNav isSideNavOpen={isSideNavOpen} setIsSideNavOpen={setIsSideNavOpen} />
+        </main>
       </body>
 
     </html>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { GiHamburgerMenu } from "react-icons/gi";
+import SideNav from "./SideNav";
 
 type NavLinkProp = {
   title: string,
@@ -23,11 +24,7 @@ export const NavLinks: NavLinkProp[] = [
   }
 ]
 
-function Header(
-  { setIsSideNavOpen }
-    : {
-      setIsSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>
-    }) {
+function Header() {
   const searchParams = useSearchParams();
   const router = useRouter()
   const pathname = usePathname()
@@ -35,6 +32,7 @@ function Header(
 
   const [searchTerm, setSearchTerm] = useState<string>();
   const [showUserOptions, setShowUserOptions] = useState(false)
+  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
 
@@ -52,7 +50,7 @@ function Header(
   }, [searchTerm]);
 
   return (
-    <div className="w-full bg-[#F5F5F3] sticky top-0 z-10">
+    <header className="w-full bg-[#F5F5F3] sticky top-0 z-10">
       <div className="max-w-container mx-auto">
         <div className="flex items-center justify-between px-4 pb-4 lg:pb-0 h-24">
           <Link href="/">
@@ -79,7 +77,7 @@ function Header(
             </Link>
           ))}
 
-          {/* phone display */}
+          {/* Larger devices display */}
           <div className="relative flex-grow text-center">
             <div onClick={() => setShowUserOptions(curr => !curr)} className="font-normal text-[#767676] h-6 px-6 justify-center items-center hidden md:flex">
               <FaUser />
@@ -101,22 +99,22 @@ function Header(
             </div>
           </div>
 
-          {/* larger devices display */}
-          <GiHamburgerMenu onClick={() => setIsSideNavOpen(true)} className="inline md:hidden text-3xl" />
+          {/* Phones display */}
+          <GiHamburgerMenu onClick={() => {
+            setIsSideNavOpen(true)
+            document.body.classList.add('sidenav-open');
+          }} className="inline md:hidden text-3xl" />
         </div>
       </div>
 
+      <SideNav isSideNavOpen={isSideNavOpen} setIsSideNavOpen={setIsSideNavOpen} />
 
-    </div>
+    </header>
   );
 };
 
-export default ({
-  setIsSideNavOpen }
-  : {
-    setIsSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>
-  }) => (
+export default () => (
   <SessionProvider>
-    <Header setIsSideNavOpen={setIsSideNavOpen} />
+    <Header />
   </SessionProvider>
 )
