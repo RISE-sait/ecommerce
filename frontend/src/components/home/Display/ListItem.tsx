@@ -21,51 +21,41 @@ export default function ListItem({ productsInfo }: {
 
 
     return (
-        <div className="flex gap-6 relative my-5 items-center justify-center">
-            <div className="relative ml-2 md:ml-0 max-h-[35vh] md:min-h-[30vh] aspect-square basis-[30%] md:basis-[20%]">
-                <Image
-                    className="rounded-md"
-                    quality={50}
-                    fill={true}
-                    sizes="100%"
-                    alt={imageSrc}
-                    src={imageSrc}
-                />
-            </div>
-            <div className="basis-[60%] md:basis-[60%] text-2xl flex flex-col justify-between relative">
-                <div className="my-5">
-                    <h4 className="font-bold">{itemName}</h4>
-                    <h4 className="text-base font-normal line-clamp-4" >{description}</h4>
+        <div className="flex gap-6 my-5 justify-center">
+            <div className="relative ml-2 md:ml-0 max-h-[35vh] md:min-h-[30vh] basis-[30%] md:basis-[20%]">
+                <div className="max-h-[90%] relative aspect-square">
+                    <Image
+                        className="rounded-md"
+                        quality={50}
+                        fill={true}
+                        sizes="100%"
+                        alt={imageSrc}
+                        src={imageSrc}
+                    />
                 </div>
-                <h3>
-                    ${price.toString().includes('.') ? price : price.toFixed(2)}
-                </h3>
-
                 {authorLink && authorName && imageCredit &&
-                    <div className="flex flex-col">
-                        <h6 className="m-0 text-sm">
-                            Image by:{" "}
-                            <a
-                                href={authorLink}
-                                className="text-[rgb(0, 0, 238)]"
-                                style={{ textDecoration: "none" }}
-                            >
-                                {authorName}
-                            </a>
-                        </h6>
-                        <Link
-                            href={imageCredit}
-                            className="font-bold text-xs"
-                            style={{
-                                textDecoration: "none",
-                                color: "rgb(0, 0, 238)",
-                            }}
-                        >
-                            Image source
-                        </Link>
-                    </div>
+
+                    <Link
+                        href={imageCredit}
+                        className="font-bold text-xs"
+                        style={{
+                            textDecoration: "none",
+                            color: "rgb(0, 0, 238)",
+                        }}
+                    >
+                        Image source
+                    </Link>
                 }
-                <ItemQuantitySet productsInfo={productsInfo} display={"list"} />
+            </div>
+            <div className="basis-[60%] md:basis-[60%] text-2xl flex flex-col justify-between">
+                <h4 className="font-bold">{itemName}</h4>
+                <h4 className="text-base font-normal line-clamp-4" >{description}</h4>
+                <div className="flex justify-between">
+                    <h3>
+                        ${price.toString().includes('.') ? price : price.toFixed(2)}
+                    </h3>
+                    <ItemQuantitySet productsInfo={productsInfo} display={"list"} />
+                </div>
             </div>
 
         </div>

@@ -71,7 +71,7 @@ export default ({ productsInfo, display, show }: {
     }
 
 
-    return display === "list" ? <div className="flex absolute bottom-0 right-0 gap-2">
+    return display === "list" ? <div className="flex gap-2">
         <button onClick={() => AddOrReduce(AddOrReduceEnum.REDUCE)}>-</button>
         <input type="number" onChange={event => setNewQty(event.target.valueAsNumber)} value={quantity} min={0} className="w-12 text-center border border-black" />
         <button onClick={() => AddOrReduce(AddOrReduceEnum.ADD)}>+</button>
