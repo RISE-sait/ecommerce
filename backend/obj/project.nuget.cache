@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "l5sIt2UPA+Y=",
+  "dgSpecHash": "dwQHL72e7f8=",
   "success": true,
-  "projectFilePath": "d:\\coding\\ksports\\backend\\backend.csproj",
+  "projectFilePath": "D:\\coding\\ksports\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\progr\\.nuget\\packages\\dotenv.net\\3.1.3\\dotenv.net.3.1.3.nupkg.sha512",
     "C:\\Users\\progr\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
