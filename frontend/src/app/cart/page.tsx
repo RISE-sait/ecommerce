@@ -7,16 +7,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-export default () => (
-  <SessionProvider>
-    <CheckoutPage />
-  </SessionProvider>
-)
-
-function CheckoutPage() {
+export default function CheckoutPage() {
 
   const router = useRouter()
-  const { status } = useSession()
+  const { status, data } = useSession()
 
   const [cookies, setCookie] = useCookies(["cart"]);
 
@@ -69,15 +63,13 @@ function CheckoutPage() {
         <h1 className="text-4xl font-bold my-6">Cart</h1>
         {
           !cart || Object.keys(cart).length === 0 ? <EmptyCart /> :
-            <CheckoutItemsDisplay />
+            <CheckoutItemsDisplay email={data?.user?.email as string} />
         }
       </div>
     </SessionProvider>
   );
 
-  function CheckoutItemsDisplay() {
-
-    const { status, data } = useSession()
+  function CheckoutItemsDisplay({ email }: { email: string }) {
 
     const CheckoutItemsDisplay = Object.keys(cart).map(idStr => {
       const id = parseInt(idStr);
@@ -89,8 +81,6 @@ function CheckoutPage() {
         {CheckoutItemsDisplay}
         <button
           onClick={async () => {
-
-            const email = data?.user?.email
 
             if (!email) return
 
@@ -209,7 +199,8 @@ function CheckoutPage() {
       if (url) return url
       else throw "no url"
     } catch (error) {
-      throw error;
+      console.error(error)
+      throw error
     }
   }
 
