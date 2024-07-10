@@ -17,8 +17,13 @@ namespace backend.Controllers
         {
             try
             {
+
+                Console.WriteLine("Email: " + email);
+
                 var sessionService = new SessionService();
                 var session = sessionService.Get(orderId);
+
+                Console.WriteLine("Email2: " + session.CustomerEmail);
 
                 if (session.CustomerEmail != email)
                 {
@@ -27,11 +32,11 @@ namespace backend.Controllers
 
                 var metadata = session.Metadata;
 
-                Console.WriteLine("Metadata content:");
                 foreach (var kvp in metadata)
                 {
                     Console.WriteLine($"{kvp.Key}: {kvp.Value}");
                 }
+
                 var deliveryDate = Convert.ToDateTime(metadata["deliverDate"]);
                 var productsUnformatted = sessionService.ListLineItems(orderId);
 
@@ -54,13 +59,22 @@ namespace backend.Controllers
             }
         }
 
+        public class CheckoutRequest
+        {
+            public required List<CheckoutProduct> CheckoutProducts { get; set; }
+            public required string Email { get; set; }
+        }
+
         [HttpPost()]
-        public async Task<IActionResult> CreateCheckoutSession([FromBody] List<CheckoutProduct> checkoutProducts)
+        public async Task<IActionResult> CreateCheckoutSession([FromBody] CheckoutRequest checkoutRequest)
 
         {
             try
             {
-                var deliveryDate = DateTime.UtcNow.AddDays(7);
+                List<CheckoutProduct> checkoutProducts = checkoutRequest.CheckoutProducts;
+                string email = checkoutRequest.Email;
+
+                DateTime deliveryDate = DateTime.UtcNow.AddDays(7);
 
                 var options = new SessionCreateOptions
                 {
@@ -72,7 +86,7 @@ namespace backend.Controllers
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = p.PriceData.UnitAmount,
+                            UnitAmount = p.PriceData.UnitAmount * 100,
                             Currency = p.PriceData.Currency,
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
@@ -82,12 +96,14 @@ namespace backend.Controllers
                         Quantity = p.Quantity,
                     }).ToList(),
                     Mode = "payment",
+                    CustomerEmail = email,
                     SuccessUrl = $"{domain}/paymentsuccess?orderID={{CHECKOUT_SESSION_ID}}",
                     CancelUrl = $"{domain}/paymentfailed",
                     Metadata = new Dictionary<string, string>
                 {
                     { "deliverDate", deliveryDate.ToString("o") }
                 }
+
                 };
 
                 var service = new SessionService();
@@ -97,7 +113,7 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { error = "Something wrong" });
+                return new JsonResult(new { error = ex.Message });
             }
         }
     }

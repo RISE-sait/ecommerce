@@ -77,17 +77,24 @@ function CheckoutPage() {
 
   function CheckoutItemsDisplay() {
 
+    const { status, data } = useSession()
+
     const CheckoutItemsDisplay = Object.keys(cart).map(idStr => {
       const id = parseInt(idStr);
       return CheckoutItemCard({ id });
     });
 
     return (
-      <div style={{ margin: "8vh 4vw" }}>
+      <div className="my-10 mx-8">
         {CheckoutItemsDisplay}
         <button
           onClick={async () => {
-            const checkoutUrl = await checkout(itemsForCheckout);
+
+            const email = data?.user?.email
+
+            if (!email) return
+
+            const checkoutUrl = await checkout(itemsForCheckout, email);
             window.location.href = checkoutUrl;
           }}
           className="ml-auto mt-[3vh] block bg-green-500 text-white text-xl py-[1vh] px-[4vw]"
@@ -180,7 +187,8 @@ function CheckoutPage() {
   }
 
   async function checkout(
-    itemsForCheckout: checkoutItemStructure[]
+    itemsForCheckout: checkoutItemStructure[],
+    email: string
   ): Promise<string> {
     try {
       if (itemsForCheckout.length === 0) throw "Nothing to checkout"
@@ -190,12 +198,16 @@ function CheckoutPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(itemsForCheckout),
+        body: JSON.stringify({
+          checkoutProducts: itemsForCheckout,
+          email
+        }),
       });
+
       const { url }: { url: string } = await response.json();
 
       if (url) return url
-      throw "no url";
+      else throw "no url"
     } catch (error) {
       throw error;
     }

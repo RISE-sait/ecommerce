@@ -2,7 +2,6 @@
 
 import { backendHost } from "@/helpers/general";
 import { SessionProvider, useSession } from "next-auth/react";
-import Head from "next/head";
 import { CSSProperties, useRef, useState } from "react";
 
 type purchasedItemsFormat = {
@@ -34,28 +33,19 @@ export default () => <SessionProvider>
 
 function TrackMyOrderPage() {
   const [purchasedItems, setPurchasedItems] = useState<purchasedItemsFormat[]>([]);
-  const [deliverDate, setDeliverDate] = useState<Date>();
   const orderIdInput = useRef<HTMLInputElement>(null);
   const [deliverStatus, setDeliverStatus] = useState<string>()
 
-
-  const { data: session } = useSession()
-
-  const today = new Date();
-
-  if (deliverDate) {
-    const deliverDateString = deliverDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-    setDeliverStatus(() => {
-      if (today < deliverDate) return `Products will be delivered at ${deliverDateString}`
-      else if (today === deliverDate) return `Products will be delivered today`
-      else return `Products should have been delivered. If not, please contact KSports`
-    }
-    )
-  }
+  const { data: session, status } = useSession()
 
   const getPurchasedItems = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (status !== "authenticated") return
+
+    const email = session.user?.email
+
+    if (!email) return
 
     const orderIdElement = orderIdInput.current
 
@@ -64,7 +54,17 @@ function TrackMyOrderPage() {
     const { deliveryDate, products } = await fetchPurchasedItems(orderIdElement.value, session?.user?.email as string);
 
     if (deliveryDate && products.length > 0) {
-      setDeliverDate(new Date(deliveryDate))
+      const deliverDate = new Date(deliveryDate)
+
+      const today = new Date();
+      const deliverDateString = deliverDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      setDeliverStatus(() => {
+        if (today < deliverDate) return `Products will be delivered at ${deliverDateString}`
+        else if (today === deliverDate) return `Products will be delivered today`
+        else return `Products should have been delivered. If not, please contact KSports`
+      }
+      )
 
       setPurchasedItems(products);
     }
@@ -104,7 +104,7 @@ function TrackMyOrderPage() {
                   >
                     <p className="text-xl">{item.name}</p>
                     <p className="text-xl">
-                      Price: ${item.price}
+                      Price: ${item.price / 100}
                     </p>
                     <p className="text-xl">Quantity: {item.quantity}</p>
                   </div>
@@ -122,7 +122,6 @@ function TrackMyOrderPage() {
 
 async function fetchPurchasedItems(orderId: string, email: string): Promise<trackedItemsType> {
   try {
-
     const response = await fetch(`${backendHost}Checkout?orderId=${orderId}&email=${email}`)
     const items: trackedItemsType = await response.json()
 

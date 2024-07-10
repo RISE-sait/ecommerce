@@ -16,7 +16,7 @@ export default function SideNav(
 
     useEffect(() => {
         setContent(
-            <nav className={`inset-0 bg-blue-500 z-20 text-white text-2xl pl-6 pt-16 flex flex-col gap-10 transition-all duration-200 absolute ${isSideNavOpen ? "left-0" : "left-full"}`}>
+            <nav className={`box-border inset-0 bg-blue-500 z-20 text-white text-2xl pl-6 pt-16 flex flex-col gap-10 transition-all duration-200 fixed ${isSideNavOpen ? "left-0" : "left-full"}`}>
                 <Link className="hover:underline" href={"/"} onClick={() => closeNavShowContent()}><p>HOME</p></Link>
                 <Link href={"/trackmyorder"} className="hover:underline" onClick={() => closeNavShowContent()}> <p>TRACK MY ORDER</p></Link>
                 <div>
