@@ -1,30 +1,32 @@
-"use client"
-
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/Header'
+import Header from '@/components/Header/Header'
 import React from 'react'
-import { SessionProvider } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+import SessionProviderClientComponent from '@/components/SessionProviderClientComponent'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
 
+  const session = await getServerSession()
+
   return (
     <html lang="en">
 
       <body className={`max-w-[100vw]`} id='body'>
-        <SessionProvider>
+        <SessionProviderClientComponent session={session}>
           <Header />
 
           <main className="md:mx-8">
             {children}
           </main>
-        </SessionProvider>
+        </SessionProviderClientComponent>
+
       </body>
 
     </html>
