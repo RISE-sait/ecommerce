@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    eslint:{
-        ignoreDuringBuilds:true
+    eslint: {
+        ignoreDuringBuilds: true
     },
-    images:{
-        remotePatterns:[
-           
+    images: {
+        remotePatterns: [
+
             {
-                protocol:'https',
-                hostname:"klintsstorage1.blob.core.windows.net",
+                protocol: 'https',
+                hostname: "klintsstorage1.blob.core.windows.net",
             }
         ]
     }

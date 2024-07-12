@@ -1,6 +1,6 @@
 "use client"
 
-import { backendHost, checkoutItemStructure } from "@/helpers/general";
+import { checkoutItemStructure } from "@/helpers/general";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -61,7 +61,9 @@ export default function CheckoutButton() {
 
                 if (!email) return
 
-                const checkoutUrl = await checkout();
+                const { checkout } = await import("@/helpers/general")
+
+                const checkoutUrl = await checkout(itemsForCheckout, session, checkUser);
                 window.location.href = checkoutUrl;
             }}
             className="ml-auto mt-[3vh] block bg-green-500 text-white text-xl py-[1vh] px-[4vw]"
@@ -69,32 +71,5 @@ export default function CheckoutButton() {
             Checkout
         </button>
     )
-
-    async function checkout(): Promise<string> {
-        try {
-            if (itemsForCheckout.length === 0) throw "Nothing to checkout"
-
-            checkUser()
-
-            const response = await fetch(`${backendHost}Checkout`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    checkoutProducts: itemsForCheckout,
-                    email: session?.user?.email as string
-                }),
-            });
-
-            const { url }: { url: string } = await response.json();
-
-            if (url) return url
-            else throw "no url"
-        } catch (error) {
-            console.error(error)
-            throw error
-        }
-    }
 }
 

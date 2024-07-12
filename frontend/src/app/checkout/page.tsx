@@ -2,13 +2,11 @@
 
 import CheckoutButton from "@/components/checkout/CheckoutButton";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
 export default function CheckoutPage() {
 
-  const router = useRouter()
   const [cookies, setCookie] = useCookies(["cart"]);
 
   const [cart, setCart] = useState<{

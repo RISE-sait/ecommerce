@@ -1,19 +1,8 @@
 "use client";
 
-import { backendHost } from "@/helpers/general";
-import { SessionProvider, useSession } from "next-auth/react";
+import { purchasedItemsFormat } from "@/helpers/general";
+import { useSession } from "next-auth/react";
 import { CSSProperties, useRef, useState } from "react";
-
-type purchasedItemsFormat = {
-  price: number,
-  name: string,
-  quantity: number
-};
-
-type trackedItemsType = {
-  deliveryDate: string,
-  products: purchasedItemsFormat[]
-}
 
 const styles: { [key: string]: CSSProperties } = {
   inputs: {
@@ -27,11 +16,8 @@ const styles: { [key: string]: CSSProperties } = {
   },
 };
 
-export default () => <SessionProvider>
-  <TrackMyOrderPage />
-</SessionProvider>
 
-function TrackMyOrderPage() {
+export default function TrackMyOrderPage() {
   const [purchasedItems, setPurchasedItems] = useState<purchasedItemsFormat[]>([]);
   const orderIdInput = useRef<HTMLInputElement>(null);
   const [deliverStatus, setDeliverStatus] = useState<string>()
@@ -50,6 +36,8 @@ function TrackMyOrderPage() {
     const orderIdElement = orderIdInput.current
 
     if (orderIdElement === null) throw "Try again"
+
+    const { fetchPurchasedItems } = await import("@/helpers/general")
 
     const { deliveryDate, products } = await fetchPurchasedItems(orderIdElement.value, session?.user?.email as string);
 
@@ -118,16 +106,4 @@ function TrackMyOrderPage() {
       </div>
     </>
   );
-}
-
-async function fetchPurchasedItems(orderId: string, email: string): Promise<trackedItemsType> {
-  try {
-    const response = await fetch(`${backendHost}Checkout?orderId=${orderId}&email=${email}`)
-    const items: trackedItemsType = await response.json()
-
-    return items
-
-  } catch (error) {
-    throw error
-  }
 }
