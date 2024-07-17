@@ -1,4 +1,4 @@
-import { backendHost, productsStorageType, productsType } from "@/helpers/general";
+import { backendHost, fetchData, productsStorageType, productsType } from "@/helpers/general";
 import RelatedWordsOptions from "@/components/home/Options/RelatedWordsOptions";
 import CartIcon from "@/components/home/CartIcon";
 import MainContent from "@/components/home/MainContent";
@@ -25,8 +25,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
     queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
 
-    const response = await fetch(`${backendHost}Products${queryString}`, { cache: "no-cache" })
-    const products = await response.json()
+    const products = await fetchData(`Products${queryString}`)
 
     const displayItems: productsStorageType = new Map();
     (products as (productsType & { id: number })[]).forEach(

@@ -8,15 +8,17 @@ string? stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_KEY");
 string? dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
 if (stripeSecretKey == null) throw new ArgumentNullException(nameof(stripeSecretKey));
+if (dbConnectionString == null) throw new Exception("Must provide db connection string");
+
 StripeConfiguration.ApiKey = stripeSecretKey;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", builder =>
+    options.AddPolicy("CorsSettings", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:3000", "https://k-sports.vercel.app")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
@@ -28,21 +30,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<DataContext>(options =>
-options.UseNpgsql(string.IsNullOrEmpty(dbConnectionString) ? defaultConnectionString : dbConnectionString)
+options.UseNpgsql(dbConnectionString)
 );
 
-
 var app = builder.Build();
-
-// using (var scope = app.Services.CreateScope())
-// {
-//     var services = scope.ServiceProvider;
-//     var context = services.GetRequiredService<DataContext>();
-//     DbSeeder.Seed(context);
-// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -51,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("CorsSettings");
 app.MapControllers();
 
 app.Run();

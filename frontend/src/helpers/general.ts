@@ -1,13 +1,27 @@
-// export const backendHost =
-//   process.env.NODE_ENV === "production"
-//     ? "https://ksportsbackend.azurewebsites.net/api/"
-//     : "http://localhost:5204/api/";
+export const backendHost =
+  process.env.NODE_ENV === "production"
+    ? "https://ksportsbackend.azurewebsites.net/api/"
+    : "http://localhost:5204/api/"
 
 import { Session } from "next-auth";
 
-export const backendHost = "https://ksportsbackend.azurewebsites.net/api/"
-
 export const PRICE_SORT = ["price_asc", "price_desc"] as const;
+
+export type NavLinkProp = {
+  title: string,
+  link: string
+}
+
+export const NavLinks: NavLinkProp[] = [
+  {
+    link: '/',
+    title: "Home"
+  },
+  {
+    link: '/trackmyorder',
+    title: "Track My Order"
+  }
+]
 
 export type SortType = (typeof PRICE_SORT)[number];
 
@@ -44,16 +58,16 @@ export type purchasedItemsFormat = {
   quantity: number
 };
 
-export async function fetchData(endpoint: string, requestData: any) {
+export async function fetchData(endpoint: string, requestData?: any) {
   const response = await fetch(`${backendHost}${endpoint}`, {
-    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestData),
-  });
+  }
+  );
 
-  return response.json().then((data) => data);
+  return await response.json()
 }
 
 export async function checkout(
@@ -90,8 +104,7 @@ export async function checkout(
 
 export async function fetchPurchasedItems(orderId: string, email: string): Promise<trackedItemsType> {
   try {
-    const response = await fetch(`${backendHost}Checkout?orderId=${orderId}&email=${email}`)
-    const items: trackedItemsType = await response.json()
+    const items = await fetchData(`Checkout?orderId=${orderId}&email=${email}`) as trackedItemsType
 
     return items
 
