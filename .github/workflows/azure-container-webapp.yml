@@ -1,9 +1,6 @@
 name: Build and Deploy to Azure
 
-on:
-  push:
-    branches:
-      - main # Change this to your default branch if different
+on: [push]
 
 jobs:
   build-and-deploy:
