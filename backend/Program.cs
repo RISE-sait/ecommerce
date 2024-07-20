@@ -34,6 +34,11 @@ builder.Services.AddDbContext<DataContext>(options =>
 options.UseNpgsql(dbConnectionString)
 );
 
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(8080); // HTTP port
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

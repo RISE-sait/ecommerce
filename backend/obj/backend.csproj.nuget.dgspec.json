@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\coding\\ksports\\backend\\backend.csproj": {}
+    "D:\\coding\\ksports\\backend\\backend.csproj": {}
   },
   "projects": {
-    "d:\\coding\\ksports\\backend\\backend.csproj": {
+    "D:\\coding\\ksports\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\coding\\ksports\\backend\\backend.csproj",
+        "projectUniqueName": "D:\\coding\\ksports\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "d:\\coding\\ksports\\backend\\backend.csproj",
+        "projectPath": "D:\\coding\\ksports\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\progr\\.nuget\\packages\\",
-        "outputPath": "d:\\coding\\ksports\\backend\\obj\\",
+        "outputPath": "D:\\coding\\ksports\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\progr\\AppData\\Roaming\\NuGet\\NuGet.Config",
