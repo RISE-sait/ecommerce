@@ -21,7 +21,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t klintlee/ksportsbackend:1.0 .
+        docker build -t klintlee/ksportsbackend:1.0 ./backend
         docker push klintlee/ksportsbackend:1.0
 
     - name: Login to Azure
