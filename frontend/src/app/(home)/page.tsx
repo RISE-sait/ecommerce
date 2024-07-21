@@ -27,6 +27,8 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
     const products = await fetchData(`Products${queryString}`)
 
+    console.log(products)
+
     const displayItems: productsStorageType = new Map();
     (products as (productsType & { id: number })[]).forEach(
         product => {
@@ -50,8 +52,15 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             <h1 className="text-4xl font-bold my-6">Shop now</h1>
             <RelatedWordsOptions searchParams={searchParams} />
 
-            <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
-            <MainContent displayItems={displayItems} />
+            {
+                !isNaN(displayItems.size) ? <>
+                    <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
+                    <MainContent displayItems={displayItems} />
+                </>
+                    : <h3>Loading</h3>
+            }
+
+
         </div>
     );
 };
