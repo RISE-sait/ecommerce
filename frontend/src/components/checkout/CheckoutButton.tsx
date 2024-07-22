@@ -21,7 +21,6 @@ export default function CheckoutButton() {
     const [itemsForCheckout, setItemsForCheckout] = useState<checkoutItemStructure[]>([])
     const { data: session, status } = useSession()
     const router = useRouter()
-    const checkUser = () => status === "unauthenticated" && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
 
     useEffect(() => {
 
@@ -57,11 +56,8 @@ export default function CheckoutButton() {
         <button
             onClick={async () => {
 
-                const email = session?.user?.email
-
-                if (!email) return
-
                 const { checkout } = await import("@/helpers/general")
+                const checkUser = () => status === "unauthenticated" && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
 
                 const checkoutUrl = await checkout(itemsForCheckout, session, checkUser);
                 window.location.href = checkoutUrl;
