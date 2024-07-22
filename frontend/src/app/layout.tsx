@@ -4,6 +4,7 @@ import Header from '@/components/Header/Header'
 import React from 'react'
 import { getServerSession } from 'next-auth'
 import SessionProviderClientComponent from '@/components/SessionProviderClientComponent'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] })
 

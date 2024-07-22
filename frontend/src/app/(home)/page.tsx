@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Home',
 }
 
-export default async function Page({ searchParams }: { searchParams: any }) {
+export default async function Page({ searchParams }: { searchParams: { [key: string]: string } }) {
 
     const { sortType, limit, contains, keywords } = searchParams
 
@@ -26,8 +26,6 @@ export default async function Page({ searchParams }: { searchParams: any }) {
     queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
 
     const products = await fetchData(`Products${queryString}`)
-
-    console.log(products)
 
     const displayItems: productsStorageType = new Map();
     (products as (productsType & { id: number })[]).forEach(
