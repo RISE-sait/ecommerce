@@ -19,7 +19,6 @@ export default function ListItem({ productsInfo }: {
         description,
     } = productsInfo
 
-
     return (
         <div className="flex gap-6 my-5 justify-center">
             <div className="relative ml-2 md:ml-0 max-h-[35vh] md:min-h-[30vh] basis-[30%] md:basis-[20%]">
@@ -31,6 +30,7 @@ export default function ListItem({ productsInfo }: {
                         sizes="100%"
                         alt={imageSrc}
                         src={imageSrc}
+                        priority={itemName === "Hockey stick on ice"}
                     />
                 </div>
                 {authorLink && authorName && imageCredit &&
