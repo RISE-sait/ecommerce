@@ -1,4 +1,4 @@
-import { backendHost } from "@/helpers/general";
+import { backendHost, fetchData } from "@/helpers/general";
 import RelatedWord from "./RelatedWord"
 
 type WordType = {
@@ -21,8 +21,7 @@ export default async function RelatedWordsOptions({ searchParams }: { searchPara
 
     queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
 
-    const response = await fetch(`${backendHost}Words${queryString}`, { cache: "no-cache" })
-    const data: WordType[] = await response.json()
+    const data: WordType[] = await fetchData(`Words${queryString}`)
 
     return <>
         <h3 className="text-2xl  font-semibold mt-4">Shop by related keywords</h3>

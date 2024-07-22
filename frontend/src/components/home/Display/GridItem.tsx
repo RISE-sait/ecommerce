@@ -14,7 +14,7 @@ const GridItem = ({ productsInfo }: {
     const [isShow, setIsShow] = useState(false)
 
     return (
-        <div className="flex flex-col py-5 px-3" onMouseEnter={() => setIsShow(true)} onMouseLeave={() => setIsShow(false)}>
+        <div className="flex flex-col py-5 px-3 h-full" onMouseEnter={() => setIsShow(true)} onMouseLeave={() => setIsShow(false)}>
             <GridItemContent productsInfo={productsInfo} />
             <ItemQuantitySet show={isShow} productsInfo={productsInfo} display="grid" />
         </div>
