@@ -5,17 +5,17 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { FaCartShopping } from "react-icons/fa6";
 
+interface CartItem {
+    itemName: string;
+    imageSrc: string;
+    quantity: number;
+    price: number;
+}
+
 export default function CartIcon() {
 
     const [cookies] = useCookies(["cart"]);
-    const cart = cookies.cart as {
-        [key: string]: {
-            itemName: string;
-            imageSrc: string;
-            quantity: number;
-            price: number;
-        };
-    };
+    const cart: { [key: string]: CartItem } = cookies.cart || {};
 
     const [cartAmt, setCartAmt] = useState(0)
 

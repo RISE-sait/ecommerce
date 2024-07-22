@@ -19,7 +19,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
 
-      <body className={`max-w-[100vw]`} id='body'>
+      <body className={inter.className}>
         <SessionProviderClientComponent session={session}>
           <Header />
 
@@ -27,6 +27,7 @@ export default async function RootLayout({
             {children}
           </main>
         </SessionProviderClientComponent>
+        <SpeedInsights />
 
       </body>
 

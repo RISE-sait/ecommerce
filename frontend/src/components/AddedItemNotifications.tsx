@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 export class Notifications {
-    static NotificationQueue: Notification[] = []
 
-    static updateNotificationQueue: (() => void) | undefined
+    static updateNotificationQueue: (notificationType: ActionType) => void
 }
 
 export enum ActionType {
@@ -11,47 +10,42 @@ export enum ActionType {
 }
 
 type Notification = {
-    timeout?: NodeJS.Timeout;
+    createdTime: number
+    timeout: NodeJS.Timeout
     action: ActionType
 }
 
-export default () => {
+export default function AddedItemNotifications() {
 
-    const [notificationQueue, setNotificationQueue] = useState(Notifications.NotificationQueue);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     useEffect(() => {
-        Notifications.updateNotificationQueue = () => {
+        Notifications.updateNotificationQueue = (notificationType: ActionType) => {
+            setNotifications(prevNotifications => {
+                // Create a new notification object
+                const newNotification = {
+                    action: notificationType,
+                    createdTime: Date.now(),
+                    timeout: setTimeout(() => {
+                        // Remove the notification after 2000ms
+                        setNotifications(notifications => notifications.filter(n => n.createdTime !== newNotification.createdTime));
+                    }, 2000)
+                };
 
-            setNotificationQueue(Notifications.NotificationQueue)
-
-            setNotificationQueue(() => {
-
-                const newQueue = [...Notifications.NotificationQueue].map((notification) => {
-                    if (!notification.timeout) {
-                        notification.timeout = setTimeout(() => {
-                            setNotificationQueue(prevQueue => 
-                                prevQueue.filter((item) => item !== notification)
-                            )
-                            Notifications.NotificationQueue.shift()
-                        }, 3000);
-                    }
-                    return notification
-                })
-
-                return newQueue;
+                // Add the new notification to the state
+                return [...prevNotifications, newNotification];
             });
-        };
-
-        return () => {
-            Notifications.updateNotificationQueue = undefined
         }
+    }, [])
 
-    }, []);
-
-    return <div className="fixed top-16 right-0 z-20 flex flex-col gap-4">
+    return <div className="top-16 fixed right-0 z-20">
         {
-            notificationQueue.map((notification, idx) => {
-                return <h2 className={`p-5 ${notification.action === ActionType.ADD ? "bg-green-500" : "bg-red-500"}`} key={idx}>
+            notifications.map((notification, idx) => {
+                return <h2
+                    key={notification.createdTime}
+                    className={`p-4 relative ${notification.action === ActionType.ADD ? "bg-green-500" : "bg-red-500"} transition-transform duration-1000`}
+                    style={{ transform: `translateY(${idx * 15}px)` }}
+                >
                     {notification.action === ActionType.ADD ? "Added 1 item to cart" : "Removed 1 item from cart"}
                 </h2>
             })

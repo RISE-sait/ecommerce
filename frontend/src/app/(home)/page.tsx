@@ -1,4 +1,4 @@
-import { backendHost, fetchData, productsStorageType, productsType } from "@/helpers/general";
+import { fetchData, productsStorageType, productsType } from "@/helpers/general";
 import RelatedWordsOptions from "@/components/home/Options/RelatedWordsOptions";
 import CartIcon from "@/components/home/CartIcon";
 import MainContent from "@/components/home/MainContent";
@@ -8,24 +8,27 @@ export const metadata: Metadata = {
     title: 'Home',
 }
 
-export default async function Page({ searchParams }: { searchParams: { [key: string]: string } }) {
+interface SearchParams {
+    sortType?: string
+    limit?: string
+    contains?: string
+    keywords?: string
+}
+
+export default async function Page({ searchParams }: { searchParams: SearchParams }) {
 
     const { sortType, limit, contains, keywords } = searchParams
 
-    const queryParams = {
-        sortType: sortType && `sort=${sortType}`,
-        limit: limit && `limit=${limit}`,
-        contains: contains && `contains=${contains}`,
-        keywords: keywords && `keywords=${keywords}`
-    };
+    const queryParams = new URLSearchParams();
 
-    let queryString = Object.values(queryParams)
-        .filter(param => param)
-        .join('&');
+    if (sortType) queryParams.set('sort', sortType)
+    if (limit) queryParams.set('limit', limit)
+    if (contains) queryParams.set('contains', contains)
+    if (keywords) queryParams.set('keywords', keywords)
 
-    queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
+    const queryString = queryParams.toString()
 
-    const products = await fetchData(`Products${queryString}`)
+    const products = await fetchData(`Products${queryString ? '?' + queryString : ''}`)
 
     const displayItems: productsStorageType = new Map();
     (products as (productsType & { id: number })[]).forEach(
