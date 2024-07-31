@@ -50,6 +50,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("CorsSettings");
+
+// Endpoint gets called every 10 minutes to prevent service going asleep
+app.MapGet("/", () => "Hello World");
+
 app.MapControllers();
 
 app.Run();
