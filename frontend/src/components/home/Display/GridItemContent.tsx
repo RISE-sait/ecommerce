@@ -1,4 +1,4 @@
-import { productsType } from "@/helpers/general"
+import { productsType } from "@/types/types"
 import Image from "next/image"
 
 export default function ({ productsInfo }: {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { productsStorageType } from "../../../helpers/general";
 import GridItem from "./GridItem";
 import ListItem from "./ListItem";
+import { productsStorageType } from "@/types/types";
 
 export enum AddOrReduceEnum {
   ADD, REDUCE
@@ -15,7 +15,7 @@ export default function ProductsDisplay({
   isDisplayGrid: boolean
 }) {
 
-  const [isSmallScreen, setIsSmallScreen] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(true)
 
   useEffect(() => {
 

@@ -1,65 +1,10 @@
-export const backendHost =
-  process.env.NODE_ENV === "production"
-    ? "https://ksportsbackend.azurewebsites.net/api/"
-    : "http://localhost:5204/api/"
-
+import { checkoutItemStructure, trackedItemsType } from "@/types/types";
 import { Session } from "next-auth";
-
-export const PRICE_SORT = ["price_asc", "price_desc"] as const;
-
-export type NavLinkProp = {
-  title: string,
-  link: string
-}
-
-export const NavLinks: NavLinkProp[] = [
-  {
-    link: '/',
-    title: "Home"
-  },
-  {
-    link: '/trackmyorder',
-    title: "Track My Order"
-  }
-]
-
-export type SortType = (typeof PRICE_SORT)[number];
-
-export type productsType = {
-  itemName: string;
-  authorLink?: string;
-  authorName?: string;
-  imageCredit?: string;
-  imageSrc: string;
-  price: number;
-  quantity?: number;
-  description: string
-};
-
-export type checkoutItemStructure = {
-  PriceData: {
-    Currency: string;
-    ProductData: { Name: string };
-    UnitAmount: number;
-  },
-  Quantity: number;
-};
-
-export type productsStorageType = Map<number, productsType>;
-
-export type trackedItemsType = {
-  deliveryDate: string,
-  products: purchasedItemsFormat[]
-}
-
-export type purchasedItemsFormat = {
-  price: number,
-  name: string,
-  quantity: number
-};
+import { backendHost } from "../../constants/consts";
 
 export async function fetchData(endpoint: string, requestData?: any) {
   const response = await fetch(`${backendHost}${endpoint}`, {
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
     },

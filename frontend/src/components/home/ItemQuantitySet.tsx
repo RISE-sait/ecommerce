@@ -2,8 +2,8 @@
 
 import { useCookies } from "react-cookie";
 import { AddOrReduceEnum } from "./Display/DisplayItems";
-import { productsType } from "@/helpers/general";
 import { ActionType, Notifications } from "../AddedItemNotifications";
+import { productsType } from "@/types/types";
 
 interface CartItem {
     itemName: string

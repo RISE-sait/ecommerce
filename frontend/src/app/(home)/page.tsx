@@ -1,64 +1,46 @@
-import { fetchData, productsStorageType, productsType } from "@/helpers/general";
 import RelatedWordsOptions from "@/components/home/Options/RelatedWordsOptions";
 import CartIcon from "@/components/home/CartIcon";
 import MainContent from "@/components/home/MainContent";
 import type { Metadata } from 'next'
+import { productsStorageType, productsType, SearchParams } from "@/types/types";
+import { fetchData } from "@/helpers/helpers";
 
 export const metadata: Metadata = {
     title: 'Home',
 }
 
-interface SearchParams {
-    sortType?: string
-    limit?: string
-    contains?: string
-    keywords?: string
-}
+export default async function Page({ searchParams }: { searchParams: SearchParams}) {
 
-export default async function Page({ searchParams }: { searchParams: SearchParams }) {
+    const queryParams = new URLSearchParams(searchParams as Record<string, string>);
 
-    const { sortType, limit, contains, keywords } = searchParams
+    const products = await fetchData(`Products${queryParams.toString() ? '?' + queryParams : ''}`)
 
-    const queryParams = new URLSearchParams();
+    const displayItems: productsStorageType = new Map(
+        (products as (productsType & { id: number })[]).map(
+            product => [product.id, {
+                ...product,
+            }])
+    )
 
-    if (sortType) queryParams.set('sort', sortType)
-    if (limit) queryParams.set('limit', limit)
-    if (contains) queryParams.set('contains', contains)
-    if (keywords) queryParams.set('keywords', keywords)
+    const wordsQueryParams = new URLSearchParams({
+        ...(queryParams.has('contains') && { contains: queryParams.get('contains')! }),
+        ...(queryParams.has('keywords') && { keywords: queryParams.get('keywords')! }),
+    });
 
-    const queryString = queryParams.toString()
-
-    const products = await fetchData(`Products${queryString ? '?' + queryString : ''}`)
-
-    const displayItems: productsStorageType = new Map();
-    (products as (productsType & { id: number })[]).forEach(
-        product => {
-
-            displayItems.set(product.id, {
-                description: product.description,
-                authorLink: product.authorLink,
-                authorName: product.authorName,
-                imageCredit: product.imageCredit,
-                imageSrc: product.imageSrc,
-                itemName: product.itemName,
-                price: product.price,
-                quantity: 0
-            });
-        }
-    );
+    const words = await fetchData(`Words?${wordsQueryParams.toString()}`)
 
     return (
         <div className="max-w-container mx-auto px-4 relative">
             <CartIcon />
             <h1 className="text-4xl font-bold my-6">Shop now</h1>
-            <RelatedWordsOptions searchParams={searchParams} />
+            <RelatedWordsOptions words={words} />
 
             {
-                !isNaN(displayItems.size) ? <>
+                displayItems.size > 0 ? <>
                     <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
-                    <MainContent displayItems={displayItems} />
+                    <MainContent displayItems={displayItems} searchParams={searchParams}/>
                 </>
-                    : <h3>Loading</h3>
+                    : <h3>No items</h3>
             }
 
 

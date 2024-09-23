@@ -1,6 +1,6 @@
 "use client"
 
-import { checkoutItemStructure } from "@/helpers/general";
+import { checkoutItemStructure } from "@/types/types";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -56,7 +56,7 @@ export default function CheckoutButton() {
         <button
             onClick={async () => {
 
-                const { checkout } = await import("@/helpers/general")
+                const { checkout } = await import("@/helpers/helpers")
                 const checkUser = () => status === "unauthenticated" && router.push(`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://k-sports.vercel.app/"}api/auth/signin`)
 
                 const checkoutUrl = await checkout(itemsForCheckout, session, checkUser);

@@ -4,7 +4,18 @@ import Link from "next/link";
 import SearchProductInput from "./SearchProductInput";
 import HamburgerMenuIcon from "./HamburgerMenuIcon";
 import UserOptions from "./UserOptions";
-import { NavLinks } from "@/helpers/general";
+import { NavLinkProp } from "@/types/types"
+
+const NavLinks: NavLinkProp[] = [
+  {
+      link: '/',
+      title: "Home"
+  },
+  {
+      link: '/trackmyorder',
+      title: "Track My Order"
+  }
+]
 
 export default function Header() {
 

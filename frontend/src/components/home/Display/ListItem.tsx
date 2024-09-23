@@ -1,7 +1,7 @@
-import { productsType } from "@/helpers/general";
 import Image from "next/image";
 import Link from "next/link";
 import ItemQuantitySet from "../ItemQuantitySet";
+import { productsType } from "@/types/types";
 
 export default function ListItem({ productsInfo }: {
     productsInfo: productsType & {

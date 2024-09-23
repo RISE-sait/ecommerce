@@ -13,24 +13,31 @@ export default function SearchProductInput() {
     const router = useRouter()
     const pathname = usePathname()
 
+    const updateUrlQuery = () => {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        if (searchTerm) {
+            current.set("contains", searchTerm);
+        } else {
+            current.delete("contains");
+        }
+        router.push(`${pathname}?${current.toString()}`);
+    }
+
     useEffect(() => {
-        const current = new URLSearchParams(Array.from(searchParams.entries()))
 
-        const handler = setTimeout(() => {
-            if (searchTerm) current.set("contains", searchTerm)
-            else if (searchTerm === undefined || searchTerm === "") current.delete("contains")
-
-            router.push(`${pathname}?${current.toString()}`)
-        }, 500)
+        const handler = setTimeout(updateUrlQuery, 500)
 
         return () => clearTimeout(handler);
-    }, [searchTerm]);
+    }, [searchTerm])
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && updateUrlQuery()
 
     return (
         <input
             className="bg-transparent h-full flex-grow outline-none placeholder:text-black placeholder:text-md md:placeholder:text-xl "
             type="text"
             onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
             value={searchTerm}
             placeholder="Search products here"
         />

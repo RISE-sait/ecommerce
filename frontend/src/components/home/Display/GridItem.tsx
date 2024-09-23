@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { productsType } from "@/helpers/general";
 import ItemQuantitySet from "../ItemQuantitySet";
 import GridItemContent from "./GridItemContent";
+import { productsType } from "@/types/types";
 
 const GridItem = ({ productsInfo }: {
     productsInfo: productsType & {

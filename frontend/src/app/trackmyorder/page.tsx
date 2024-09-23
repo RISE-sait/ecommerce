@@ -1,6 +1,6 @@
 "use client";
 
-import { purchasedItemsFormat } from "@/helpers/general";
+import { purchasedItemsFormat } from "@/types/types";
 import { useSession } from "next-auth/react";
 import { CSSProperties, useRef, useState } from "react";
 
@@ -37,7 +37,7 @@ export default function TrackMyOrderPage() {
 
     if (orderIdElement === null) throw "Try again"
 
-    const { fetchPurchasedItems } = await import("@/helpers/general")
+    const { fetchPurchasedItems } = await import("@/helpers/helpers")
 
     const { deliveryDate, products } = await fetchPurchasedItems(orderIdElement.value, session?.user?.email as string);
 

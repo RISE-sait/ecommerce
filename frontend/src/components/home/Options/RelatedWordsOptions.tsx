@@ -1,34 +1,27 @@
-import { backendHost, fetchData } from "@/helpers/general";
+"use client"
+
 import RelatedWord from "./RelatedWord"
+import { useTransition } from "react";
+import Loading from "@/components/Loading";
 
 type WordType = {
     word: string,
     productCount: number
 }
 
-export default async function RelatedWordsOptions({ searchParams }: { searchParams: any }) {
+export default function RelatedWordsOptions({words}:{words: WordType[]}) {
 
-    const { contains, keywords } = searchParams
+    const [isPending, startTransition] = useTransition()
 
-    const queryParams = {
-        contains: contains && `contains=${contains}`,
-        keywords: keywords && `keywords=${keywords}`
-    };
-
-    let queryString = Object.values(queryParams)
-        .filter(param => param)
-        .join('&');
-
-    queryString = `${queryString.length > 0 ? '?' : ''}${queryString}`
-
-    const data: WordType[] = await fetchData(`Words${queryString}`)
-
-    return <>
+    return <div>
         <h3 className="text-2xl  font-semibold mt-4">Shop by related keywords</h3>
-        <div className="flex flex-wrap gap-x-7 gap-y-5 mb-16 mt-4">
-            {
-                data.map(item => <RelatedWord word={item.word} count={item.productCount} key={item.word} />)
-            }
-        </div>
-    </>
+        {
+            isPending ? <Loading /> :
+                <div className="flex flex-wrap gap-x-7 gap-y-5 mb-16 mt-4">
+                    {
+                        words.map(item => <RelatedWord {...item} key={item.word} startTransition={startTransition} />)
+                    }
+                </div>
+        }
+    </div>
 }
