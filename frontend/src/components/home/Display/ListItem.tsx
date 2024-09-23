@@ -28,9 +28,8 @@ export default function ListItem({ productsInfo }: {
                         quality={50}
                         fill={true}
                         sizes="100%"
-                        alt={imageSrc}
+                        alt={itemName}
                         src={imageSrc}
-                        priority={itemName === "Hockey stick on ice"}
                     />
                 </div>
                 {authorLink && authorName && imageCredit &&

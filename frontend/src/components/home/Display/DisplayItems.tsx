@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import GridItem from "./GridItem";
 import ListItem from "./ListItem";
 import { productsStorageType } from "@/types/types";
+import { useProductAndWordsContext } from "@/contexts/ProductsAndWordsContext";
 
 export enum AddOrReduceEnum {
   ADD, REDUCE
@@ -16,6 +17,7 @@ export default function ProductsDisplay({
 }) {
 
   const [isSmallScreen, setIsSmallScreen] = useState(true)
+  const { isPending } = useProductAndWordsContext()
 
   useEffect(() => {
 
@@ -31,7 +33,15 @@ export default function ProductsDisplay({
     };
   }, []);
 
-  return products.size > 0 ? (
+  return isPending ? (
+    <div className="loader-container">
+      <div className="bouncing-dots">
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+      </div>
+    </div>
+  ) : products.size > 0 ? (
     <div className={`grid ${isDisplayGrid && !isSmallScreen ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-10" : "grid-cols-1"}`}>
       {Array.from(products.keys()).map(id => {
 

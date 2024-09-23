@@ -5,6 +5,7 @@ import React from 'react'
 import { getServerSession } from 'next-auth'
 import SessionProviderClientComponent from '@/components/SessionProviderClientComponent'
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ProductAndWordsProvider } from '@/contexts/ProductsAndWordsContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,11 +22,13 @@ export default async function RootLayout({
 
       <body className={inter.className}>
         <SessionProviderClientComponent session={session}>
-          <Header />
+          <ProductAndWordsProvider>
+            <Header />
 
-          <main className="md:mx-8">
-            {children}
-          </main>
+            <main className="md:mx-8">
+              {children}
+            </main>
+          </ProductAndWordsProvider>
         </SessionProviderClientComponent>
         <SpeedInsights />
 

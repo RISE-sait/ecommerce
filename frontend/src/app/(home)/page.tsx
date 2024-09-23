@@ -4,12 +4,13 @@ import MainContent from "@/components/home/MainContent";
 import type { Metadata } from 'next'
 import { productsStorageType, productsType, SearchParams } from "@/types/types";
 import { fetchData } from "@/helpers/helpers";
+import ItemsCountDisplay from "@/components/home/Display/ItemsCountDisplay";
 
 export const metadata: Metadata = {
     title: 'Home',
 }
 
-export default async function Page({ searchParams }: { searchParams: SearchParams}) {
+export default async function Page({ searchParams }: { searchParams: SearchParams }) {
 
     const queryParams = new URLSearchParams(searchParams as Record<string, string>);
 
@@ -37,8 +38,8 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
 
             {
                 displayItems.size > 0 ? <>
-                    <h3 className="font-semibold text-xl mb-4">{displayItems?.size} items</h3>
-                    <MainContent displayItems={displayItems} searchParams={searchParams}/>
+                    <ItemsCountDisplay count={displayItems.size}/>
+                    <MainContent displayItems={displayItems} searchParams={searchParams} />
                 </>
                     : <h3>No items</h3>
             }

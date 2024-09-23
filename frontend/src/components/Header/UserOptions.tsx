@@ -20,8 +20,8 @@ export default function UserOptions() {
     }
 
     return (
-        <div className="relative flex-grow text-center">
-            <div onClick={() => setShowUserOptions(curr => !curr)} className="font-normal text-[#767676] h-6 px-6 justify-center items-center hidden md:flex">
+        <div className="relative font-medium text-center text-base px-3 cursor-pointer text-[#767676]">
+            <div onClick={() => setShowUserOptions(curr => !curr)} className="items-center hidden md:flex">
                 <FaUser />
                 <FaCaretDown />
             </div>
