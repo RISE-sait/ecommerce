@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Stripe;
 
 DotEnv.Load();
-string? stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_KEY");
-string? dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+var stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_KEY");
+var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
 if (stripeSecretKey == null) throw new ArgumentNullException(nameof(stripeSecretKey));
 if (dbConnectionString == null) throw new Exception("Must provide db connection string");
@@ -34,10 +34,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 options.UseNpgsql(dbConnectionString)
 );
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(8080); // HTTP port
-});
 
 var app = builder.Build();
 
@@ -51,8 +47,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("CorsSettings");
 
-// Endpoint gets called every 10 minutes to prevent service going asleep
-app.MapGet("/", () => "Hello World");
+app.MapGet("/", () => "hello World");
 
 app.MapControllers();
 

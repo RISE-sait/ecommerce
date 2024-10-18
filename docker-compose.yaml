@@ -1,12 +1,12 @@
 services:
-  # db:
-  #   image: 'postgres'
-  #   ports:
-  #     - '5432:5432'
-  #   environment:
-  #     POSTGRES_USER: 'postgres'
-  #     POSTGRES_PASSWORD: 'root'
-  #     POSTGRES_DB: 'mydatabase'
+  db:
+    image: 'postgres'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'mydatabase'
 
   pgadmin:
     image: 'dpage/pgadmin4'
@@ -16,3 +16,19 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
       PGADMIN_DEFAULT_PASSWORD: 'admin'
+
+  server:
+    build:
+      context: ./backend   # This points to the backend directory where your Dockerfile is located
+    ports:
+      - '8080:8080'         # Change this to the port your server runs on
+    depends_on:
+      - db                  # Ensure the database is started before the server
+    develop:
+      watch:
+        - action: rebuild
+          path: ./backend
+          target: /backend
+    environment:
+      - STRIPE_KEY=${STRIPE_KEY}
+      - DB_CONNECTION=${DB_CONNECTION}

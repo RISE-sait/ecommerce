@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 
-namespace backend.Controllers
+namespace backend.Controller
 {
 
     [Route("api/[controller]")]
     [ApiController]
     public class CheckoutController() : ControllerBase
     {
-        readonly static string? envMode = Environment.GetEnvironmentVariable("ENV_MODE");
+        private static readonly string? EnvMode = Environment.GetEnvironmentVariable("ENV_MODE");
 
-        private readonly string domain = envMode == "production" ? "https://k-sports.vercel.app" : "http://localhost:3000";
+        private readonly string _domain = EnvMode == "production" ? "https://k-sports.vercel.app" : "http://localhost:3000";
 
         [HttpGet()]
         public IActionResult GetData(string orderId, string email)
@@ -18,12 +18,8 @@ namespace backend.Controllers
             try
             {
 
-                Console.WriteLine("Email: " + email);
-
                 var sessionService = new SessionService();
                 var session = sessionService.Get(orderId);
-
-                Console.WriteLine("Email2: " + session.CustomerEmail);
 
                 if (session.CustomerEmail != email)
                 {
@@ -31,11 +27,6 @@ namespace backend.Controllers
                 }
 
                 var metadata = session.Metadata;
-
-                foreach (var kvp in metadata)
-                {
-                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                }
 
                 var deliveryDate = Convert.ToDateTime(metadata["deliverDate"]);
                 var productsUnformatted = sessionService.ListLineItems(orderId);
@@ -71,10 +62,10 @@ namespace backend.Controllers
         {
             try
             {
-                List<CheckoutProduct> checkoutProducts = checkoutRequest.CheckoutProducts;
-                string email = checkoutRequest.Email;
+                var checkoutProducts = checkoutRequest.CheckoutProducts;
+                var email = checkoutRequest.Email;
 
-                DateTime deliveryDate = DateTime.UtcNow.AddDays(7);
+                var deliveryDate = DateTime.UtcNow.AddDays(7);
 
                 var options = new SessionCreateOptions
                 {
@@ -97,8 +88,8 @@ namespace backend.Controllers
                     }).ToList(),
                     Mode = "payment",
                     CustomerEmail = email,
-                    SuccessUrl = $"{domain}/paymentsuccess?orderID={{CHECKOUT_SESSION_ID}}",
-                    CancelUrl = $"{domain}/paymentfailed",
+                    SuccessUrl = $"{_domain}/paymentsuccess?orderID={{CHECKOUT_SESSION_ID}}",
+                    CancelUrl = $"{_domain}/paymentfailed",
                     Metadata = new Dictionary<string, string>
                 {
                     { "deliverDate", deliveryDate.ToString("o") }
@@ -107,7 +98,7 @@ namespace backend.Controllers
                 };
 
                 var service = new SessionService();
-                Session session = await service.CreateAsync(options);
+                var session = await service.CreateAsync(options);
 
                 return new JsonResult(new { url = session.Url });
             }
@@ -118,20 +109,20 @@ namespace backend.Controllers
         }
     }
 
-    public class CheckoutProduct
+    public abstract record CheckoutProduct
     {
         public required PriceData PriceData { get; set; }
         public long Quantity { get; set; }
     }
 
-    public class PriceData
+    public abstract record PriceData
     {
         public required string Currency { get; set; }
         public required ProductData ProductData { get; set; }
         public long UnitAmount { get; set; }
     }
 
-    public class ProductData
+    public abstract record ProductData
     {
         public required string Name { get; set; }
     }

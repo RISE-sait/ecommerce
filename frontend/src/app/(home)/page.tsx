@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
 
-    const queryParams = new URLSearchParams(searchParams as Record<string, string>);
+    const queryParams = new URLSearchParams(searchParams as Record<string, string>)
 
     const products = await fetchData(`Products${queryParams.toString() ? '?' + queryParams : ''}`)
 

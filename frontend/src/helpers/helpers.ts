@@ -4,7 +4,6 @@ import { backendHost } from "../../constants/consts";
 
 export async function fetchData(endpoint: string, requestData?: any) {
   const response = await fetch(`${backendHost}${endpoint}`, {
-    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
     },

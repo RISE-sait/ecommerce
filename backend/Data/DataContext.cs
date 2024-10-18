@@ -7,7 +7,7 @@ namespace backend.Data
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductRelatedWord> ProductRelatedWords { get; set; }
-        override protected void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasKey(p => p.Id);
             modelBuilder.Entity<ProductRelatedWord>().HasKey(prw => prw.Id);
@@ -16,9 +16,17 @@ namespace backend.Data
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<Product>()
+                .Property(p => p.ItemName)
+                .HasColumnType("citext");
+
             modelBuilder.Entity<ProductRelatedWord>()
                 .Property(prw => prw.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ProductRelatedWord>()
+                .Property(prw => prw.Word)
+                .HasColumnType("citext");
 
             modelBuilder.Entity<Product>()
         .Property(p => p.Price)
