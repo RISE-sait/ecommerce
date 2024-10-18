@@ -15,7 +15,7 @@ namespace backend.Controller
         {
             try
             {
-`
+
                 var query = context.ProductRelatedWords.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(contains))
