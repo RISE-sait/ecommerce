@@ -17,6 +17,31 @@ namespace backend.Controller
             {
 
                 IQueryable<Product> query = context.Products;
+                
+                if (!string.IsNullOrEmpty(contains))
+                {
+                    query = context.Products.FromSqlInterpolated(@$"
+                SELECT * 
+                FROM public.""Products""
+                WHERE
+                    tsvector_concat(
+                        setweight(to_tsvector('english', ""ItemName""::text), 'A'),
+                        setweight(to_tsvector('english', ""Description""::text), 'B')
+                    ) @@ plainto_tsquery('english', {contains})
+                ORDER BY
+                    ts_rank(
+                        tsvector_concat(
+                            setweight(to_tsvector('english', ""ItemName""::text), 'A'),
+                            setweight(to_tsvector('english', ""Description""::text), 'B')
+                        ),
+                        plainto_tsquery('english', {contains})
+                    ) DESC
+            ");
+                }
+                else
+                {
+                    query = context.Products;
+                }
 
                 // Apply filters based on query parameters
                 if (minPrice != null)
@@ -27,11 +52,6 @@ namespace backend.Controller
                 if (maxPrice != null)
                 {
                     query = query.Where(p => p.Price <= maxPrice);
-                }
-
-                if (!string.IsNullOrEmpty(contains))
-                {
-                    query = query.Where(p => EF.Functions.Like(p.ItemName, $"%{contains}%"));
                 }
 
                 if (!string.IsNullOrEmpty(keywords))
@@ -54,7 +74,7 @@ namespace backend.Controller
                     : query.OrderByDescending(p => p.Price);
 
                 var products = await query.ToListAsync();
-                
+
                 return new JsonResult(products);
             }
 
