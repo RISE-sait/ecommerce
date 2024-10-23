@@ -10,6 +10,8 @@ var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 if (stripeSecretKey == null) throw new ArgumentNullException(nameof(stripeSecretKey));
 if (dbConnectionString == null) throw new Exception("Must provide db connection string");
 
+Console.WriteLine("Connected to: " + dbConnectionString);
+
 StripeConfiguration.ApiKey = stripeSecretKey;
 
 var builder = WebApplication.CreateBuilder(args);
