@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsSettings", builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "https://k-sports.vercel.app")
+        builder.WithOrigins("https://k-sports.vercel.app")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
