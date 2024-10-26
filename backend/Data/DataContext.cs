@@ -12,6 +12,9 @@ namespace backend.Data
             modelBuilder.Entity<Product>().HasKey(p => p.Id);
             modelBuilder.Entity<ProductRelatedWord>().HasKey(prw => prw.Id);
 
+            modelBuilder.Entity<Product>().HasIndex(p => new { p.ItemName, p.Description }).HasMethod("GIN")
+                .IsTsVectorExpressionIndex("english");
+
             modelBuilder.Entity<Product>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();

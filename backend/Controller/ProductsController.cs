@@ -20,23 +20,18 @@ namespace backend.Controller
                 
                 if (!string.IsNullOrEmpty(contains))
                 {
-                    query = context.Products.FromSqlInterpolated(@$"
-                SELECT * 
-                FROM public.""Products""
-                WHERE
-                    tsvector_concat(
-                        setweight(to_tsvector('english', ""ItemName""::text), 'A'),
-                        setweight(to_tsvector('english', ""Description""::text), 'B')
-                    ) @@ plainto_tsquery('english', {contains})
-                ORDER BY
-                    ts_rank(
-                        tsvector_concat(
-                            setweight(to_tsvector('english', ""ItemName""::text), 'A'),
-                            setweight(to_tsvector('english', ""Description""::text), 'B')
-                        ),
-                        plainto_tsquery('english', {contains})
-                    ) DESC
-            ");
+                    query = context.Products
+                        .Where(p => EF.Functions
+                            .ToTsVector("english", p.ItemName + " " + p.Description).Matches(EF.Functions.WebSearchToTsQuery("english", contains)))
+                        .Select(p => new
+                        {
+                            Product = p,
+                            Rank = EF.Functions
+                                .ToTsVector("english", p.ItemName + " " + p.Description)
+                                .Rank(EF.Functions.WebSearchToTsQuery("english", contains))
+                        })
+                        .OrderByDescending(p => p.Rank)
+                        .Select(p => p.Product);
                 }
                 else
                 {
