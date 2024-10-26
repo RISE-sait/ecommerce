@@ -4,21 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Stripe;
 using File = System.IO.File;
 
-string LoadEnvFile()
+string LoadEnvFileForMigration()
 {
-    var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
-    var parentEnvPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.FullName ?? throw new Exception(".env file not found"), ".env");
+    var envPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.FullName ?? throw new Exception(".env file not found"), ".env");
 
-    if (File.Exists(envPath) || File.Exists(parentEnvPath))
+    if (File.Exists(envPath))
     {
-        return File.Exists(envPath) ? envPath : parentEnvPath;
+        DotEnv.Load(new DotEnvOptions(envFilePaths: [envPath]));
     }
 
-    throw new Exception(".env file not found in current or parent directory.");
+    throw new Exception(".env file not found");
 }
-
-var envFilePath = LoadEnvFile();
-DotEnv.Load(new DotEnvOptions(envFilePaths:[envFilePath]));
 
 var stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_KEY");
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
