@@ -20,7 +20,7 @@ export default function Header() {
 
   return (
     <header className="bg-[#F5F5F3] sticky top-0 z-10">
-      <div className="flex items-center justify-between px-10 py-5">
+      <div className="flex items-center justify-between py-5">
         <Link href="/">
           <h3 className="bg-blue-500 text-white font-bold text-md md:text-xl px-3 py-2">KSPORTS</h3>
         </Link>

@@ -2,8 +2,24 @@ using backend.Data;
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using File = System.IO.File;
 
-DotEnv.Load();
+string LoadEnvFile()
+{
+    var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+    var parentEnvPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.FullName ?? throw new Exception(".env file not found"), ".env");
+
+    if (File.Exists(envPath) || File.Exists(parentEnvPath))
+    {
+        return File.Exists(envPath) ? envPath : parentEnvPath;
+    }
+
+    throw new Exception(".env file not found in current or parent directory.");
+}
+
+var envFilePath = LoadEnvFile();
+DotEnv.Load(new DotEnvOptions(envFilePaths:[envFilePath]));
+
 var stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_KEY");
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 

@@ -25,7 +25,7 @@ export default function UserOptions() {
                 <FaUser />
                 <FaCaretDown />
             </div>
-            <div className={`absolute top-7 left-0 right-0 text-center w-40 mx-auto ${showUserOptions ? "block" : "hidden"} bg-white border border-black px-1 py-3`}>
+            <div className={`absolute top-7 right-0 text-center w-40 mx-auto ${showUserOptions ? "block" : "hidden"} bg-white border border-black px-1 py-3`}>
                 {
                     session?.user ?
                         <>
